@@ -22,10 +22,10 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/tvBienvenido"
             android:layout_width="253dp"
             android:layout_height="75dp"
-            android:layout_marginStart="32dp"
+            android:layout_marginStart="30dp"
             android:layout_marginTop="40dp"
             android:fontFamily="@font/cinzel_decorative"
             android:text="Bienvenidos a DocGames"
@@ -37,7 +37,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/editTextTextEmailAddress"
+            android:id="@+id/ptEmail"
             android:layout_width="211dp"
             android:layout_height="48dp"
             android:layout_marginStart="51dp"
@@ -48,10 +48,10 @@
             android:inputType="textEmailAddress"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+            app:layout_constraintTop_toBottomOf="@+id/tvBienvenido" />
 
         <EditText
-            android:id="@+id/editTextTextPassword"
+            android:id="@+id/ptPass"
             android:layout_width="211dp"
             android:layout_height="48dp"
             android:layout_marginStart="51dp"
@@ -62,10 +62,10 @@
             android:inputType="textPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress" />
+            app:layout_constraintTop_toBottomOf="@+id/ptEmail" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/tvOlvidastePass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="60dp"
@@ -73,31 +73,44 @@
             android:text="¿Olvidaste tu contraseña?"
             android:textSize="11sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintTop_toBottomOf="@+id/tvNoCuenta" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/tvNoCuenta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="60dp"
             android:layout_marginTop="16dp"
+            android:linksClickable="false"
             android:text="¿No tienes cuenta?"
             android:textSize="11sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button" />
+            app:layout_constraintTop_toBottomOf="@+id/btnIniciarSesion" />
+
+        <TextView
+            android:id="@+id/tvRegistrarse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="168dp"
+            android:layout_marginTop="16dp"
+            android:linksClickable="true"
+            android:text="Registrate"
+            android:textSize="11sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnIniciarSesion" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/btnIniciarSesion"
             android:layout_width="211dp"
             android:layout_height="48dp"
             android:layout_marginStart="51dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="51dp"
             android:backgroundTint="#39C2B6"
-            android:text="Button"
+            android:text="Iniciar sesión"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
+            app:layout_constraintTop_toBottomOf="@+id/ptPass" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
