@@ -1,12 +1,12 @@
 package com.example.docgames
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 
 class Login : AppCompatActivity() {
@@ -24,7 +24,7 @@ class Login : AppCompatActivity() {
 
 
         //BOTON DE INICIO DE SESIÓN
-        val btnIniciarSesion : Button = findViewById(R.id.btnIniciarSesion)
+        val btnIniciarSesion : Button = findViewById(R.id.btnLogin)
         btnIniciarSesion.setOnClickListener {
             val editTextEmail : EditText = findViewById(R.id.ptEmail)
             val editTextPass : EditText = findViewById(R.id.ptPass)
@@ -37,6 +37,12 @@ class Login : AppCompatActivity() {
             else{
                 Toast.makeText(this, "No se han introducido los datos correctamente", Toast.LENGTH_LONG).show()
             }
+        }
+
+        val tvRegistro : TextView = findViewById(R.id.tvRegistrarse)
+        tvRegistro.setOnClickListener {
+            val intent = Intent(this, Register::class.java)
+            startActivity(intent)
         }
     }
 }
