@@ -39,7 +39,7 @@ class Login : AppCompatActivity() {
             }
         }
 
-        val tvRegistro : TextView = findViewById(R.id.tvRegistrarse)
+        val tvRegistro : TextView = findViewById(R.id.tvIrRegistrarse)
         tvRegistro.setOnClickListener {
             val intent = Intent(this, Register::class.java)
             startActivity(intent)

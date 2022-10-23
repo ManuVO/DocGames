@@ -8,8 +8,8 @@
     tools:context=".Login">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="312dp"
-        android:layout_height="458dp"
+        android:layout_width="311dp"
+        android:layout_height="422dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="102dp"
         android:layout_marginEnd="24dp"
@@ -27,12 +27,14 @@
             android:layout_height="75dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="40dp"
+            android:layout_marginEnd="28dp"
             android:fontFamily="@font/cinzel_decorative"
             android:text="Bienvenidos a DocGames"
             android:textAlignment="center"
             android:textColor="#256D72"
             android:textSize="30sp"
             android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,7 +43,7 @@
             android:layout_width="211dp"
             android:layout_height="48dp"
             android:layout_marginStart="51dp"
-            android:layout_marginTop="44dp"
+            android:layout_marginTop="45dp"
             android:layout_marginEnd="51dp"
             android:ems="10"
             android:hint="Correo electrónico"
@@ -65,46 +67,27 @@
             app:layout_constraintTop_toBottomOf="@+id/ptEmail" />
 
         <TextView
-            android:id="@+id/tvOlvidastePass"
+            android:id="@+id/tvIrRegistrarse"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="19dp"
             android:layout_marginStart="60dp"
-            android:layout_marginTop="16dp"
-            android:text="¿Olvidaste tu contraseña?"
-            android:textSize="11sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvNoCuenta" />
-
-        <TextView
-            android:id="@+id/tvNoCuenta"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="60dp"
-            android:layout_marginBottom="70dp"
-            android:linksClickable="false"
-            android:text="¿No tienes cuenta?"
-            android:textSize="11sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/tvRegistrarse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginBottom="70dp"
-            android:text="Registrate"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="60dp"
+            android:layout_marginBottom="28dp"
+            android:text="¿No tienes cuenta? Registrate"
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvNoCuenta" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
 
         <Button
             android:id="@+id/btnLogin"
             android:layout_width="211dp"
             android:layout_height="48dp"
             android:layout_marginStart="51dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="25dp"
             android:layout_marginEnd="51dp"
             android:backgroundTint="#39C2B6"
             android:text="Iniciar sesión"
