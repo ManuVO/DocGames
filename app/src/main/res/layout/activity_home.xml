@@ -72,4 +72,19 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="42dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="10dp"
+        android:onClick="showMenu"
+        app:layout_constraintBottom_toTopOf="@+id/cl_buscarjuego"
+        app:layout_constraintEnd_toStartOf="@+id/logo_menu"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_menu" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
