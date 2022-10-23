@@ -35,7 +35,7 @@ class Login : AppCompatActivity() {
                 startActivity(intent)
             }
             else{
-                Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "ERRO", Toast.LENGTH_LONG).show()
             }
         }
 
