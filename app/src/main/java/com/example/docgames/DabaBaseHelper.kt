@@ -1,5 +1,6 @@
 package com.example.docgames
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -44,12 +45,13 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
      *
      * @return list
      */
-    fun getAllUser(): List {
+    @SuppressLint("Range")
+    fun getAllUser(): List<Usuario> {
         // array of columns to fetch
         val columns = arrayOf(USUARIO_ID, USUARIO_EMAIL, USUARIO_NOMBRE, USUARIO_PASS)
         // sorting orders
         val sortOrder = "$USUARIO_NOMBRE ASC"
-        val userList = ArrayList()
+        val userList = ArrayList<Usuario>()
         val db = this.readableDatabase
         // query the user table
         val cursor = db.query(USUARIO, //Table to query
