@@ -6,7 +6,7 @@
         android:title="Perfil" />
     <item
         android:id="@+id/id_menu_juegos"
-        android:title="Juegos" />
+        android:title="Mis Juegos" />
     <item
         android:id="@+id/id_menu_ajustes"
         android:title="Ajustes" />

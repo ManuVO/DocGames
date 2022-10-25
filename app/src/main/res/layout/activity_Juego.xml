@@ -26,7 +26,7 @@
         tools:visibility="visible">
 
         <TextView
-            android:id="@+id/txtBibliografía"
+            android:id="@+id/txtSinopsis"
             android:layout_width="373dp"
             android:layout_height="36dp"
             android:layout_marginStart="5dp"
@@ -34,7 +34,7 @@
             android:layout_marginBottom="200dp"
             android:background="#FFFFFF"
             android:fontFamily="sans-serif-black"
-            android:text="Biografia"
+            android:text="Sinopsis"
             android:textAlignment="center"
             android:textColor="@color/teal_700"
             android:textColorHighlight="@color/teal_700"
@@ -43,15 +43,15 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivImagenUsuario" />
+            app:layout_constraintTop_toBottomOf="@+id/ivImagenJuego" />
 
         <ImageView
-            android:id="@+id/ivImagenUsuario"
-            android:layout_width="177dp"
-            android:layout_height="151dp"
-            android:layout_marginStart="106dp"
-            android:layout_marginTop="170dp"
-            android:layout_marginEnd="107dp"
+            android:id="@+id/ivImagenJuego"
+            android:layout_width="228dp"
+            android:layout_height="201dp"
+            android:layout_marginStart="80dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginEnd="80dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -60,29 +60,8 @@
             app:layout_constraintVertical_bias="0.0"
             tools:srcCompat="@tools:sample/avatars" />
 
-        <TextView
-            android:id="@+id/txtNombreUsuario"
-            android:layout_width="392dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="100dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="500dp"
-            android:background="#FFFFFF"
-            android:fontFamily="sans-serif-black"
-            android:text="nombre"
-            android:textAlignment="center"
-            android:textColor="@color/teal_700"
-            android:textColorHighlight="@color/teal_700"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/txtPerfil"
+        <EditText
+            android:id="@+id/txtNombreJuego"
             android:layout_width="392dp"
             android:layout_height="48dp"
             android:layout_marginStart="5dp"
@@ -91,7 +70,7 @@
             android:layout_marginBottom="570dp"
             android:background="#FFFFFF"
             android:fontFamily="sans-serif-black"
-            android:text="Perfil"
+            android:text="Nombre Juego"
             android:textAlignment="center"
             android:textColor="@color/teal_700"
             android:textColorHighlight="@color/teal_700"
@@ -103,7 +82,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/btnGuardarPerfil"
+            android:id="@+id/btnAñadirAColeccion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="140dp"
@@ -111,7 +90,7 @@
             android:layout_marginEnd="140dp"
             android:layout_marginBottom="10dp"
             android:backgroundTint="@color/teal_200"
-            android:text="Guardar"
+            android:text="Añadir a mi Coleccion"
             app:iconTint="@color/teal_200"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -119,29 +98,28 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ScrollView
-            android:id="@+id/svBiografiaUsuario"
+            android:id="@+id/svSinopsisJuego"
             android:layout_width="317dp"
             android:layout_height="155dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="1dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="15dp"
-            app:layout_constraintBottom_toTopOf="@+id/btnGuardarPerfil"
+            app:layout_constraintBottom_toTopOf="@+id/btnAñadirAColeccion"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtBibliografía">
+            app:layout_constraintTop_toBottomOf="@+id/txtSinopsis">
 
-            <EditText
-                android:id="@+id/txtBibliografiaUsuario"
+            <TextView
+                android:id="@+id/txtSinopsisJuego"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:inputType="textMultiLine"
                 android:overScrollMode="always"
                 android:scrollbarStyle="insideInset"
                 android:scrollbars="vertical"
-                android:text="Introduce los datos" />
-
+                android:text="INTRODUCIR DESDE BBDD" />
+            />
         </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

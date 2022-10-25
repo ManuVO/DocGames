@@ -19,13 +19,17 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private val USUARIO_EMAIL = "email"
         private val USUARIO_NOMBRE = "nombre"
         private val USUARIO_PASS = "pass"
+        // private val USUARIO_IMG = "img"
     }
 
     private val CREAR_TABLA_USUARIO = ("CREATE TABLE " + USUARIO + "(" +
             USUARIO_ID + "INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
             USUARIO_EMAIL + "TEXT NOT NULL, " +
             USUARIO_NOMBRE + "TEXT NOT NULL," +
-            USUARIO_PASS + "TEXT NOT NULL)")
+            USUARIO_PASS + "TEXT NOT NULL)" //+
+            //USUARIO_IMG + "BLOB "
+            )
+
 
     private val DROP_TABLA_USUARIO = "DROP TABLE IF EXISTS USUARIO"
 
