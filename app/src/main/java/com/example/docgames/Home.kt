@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
+import android.widget.TextView
 import android.widget.Toast
 
 class Home : AppCompatActivity() {
@@ -15,6 +16,12 @@ class Home : AppCompatActivity() {
         val intent : Intent = intent
         val email = intent.getStringExtra("email")
         println(email)
+
+        val logoMenu : TextView = findViewById(R.id.logo_menu)
+        logoMenu.setOnClickListener {
+            showMenu(logoMenu)
+        }
+
     }
     public fun showMenu(v: View){
         val menuPopup = PopupMenu(this,v)
