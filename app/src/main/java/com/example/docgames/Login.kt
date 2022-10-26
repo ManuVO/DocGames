@@ -22,22 +22,23 @@ class Login : AppCompatActivity() {
         //BOTON DE INICIO DE SESIÓN
         val btnIniciarSesion : Button = findViewById(R.id.btnLogin)
         btnIniciarSesion.setOnClickListener {
-            val editTextEmail : EditText = findViewById(R.id.ptEmail)
-            val editTextPass : EditText = findViewById(R.id.ptPass)
+            val email : EditText = findViewById(R.id.ptEmail)
+            val pass : EditText = findViewById(R.id.ptPass)
             //USUARIO por defecto: admin CONTRASEÑA por defecto: admin
-            if(editTextEmail.text.toString().equals("admin") && editTextPass.text.toString().equals("admin")) {
+            if(dataBaseHelper.checkUser(email.text.toString(), pass.text.toString())) {
+                //if(editTextEmail.text.toString().equals("admin") && editTextPass.text.toString().equals("admin")) {
                 val intent = Intent(this, Home::class.java)
-                intent.putExtra("email", editTextEmail.text.toString())
-                intent.putExtra("pass", editTextEmail.text.toString())
+                intent.putExtra("email", email.text.toString())
+                intent.putExtra("pass", pass.text.toString())
                 startActivity(intent)
             }
             else{
                 //ENTRA A HOME SIEMPRE (CAMBIAR MAS ADELANTE)
-                val intent = Intent(this, Home::class.java)
+                /*val intent = Intent(this, Home::class.java)
                 intent.putExtra("email", editTextEmail.text.toString())
                 intent.putExtra("pass", editTextEmail.text.toString())
-                startActivity(intent)
-                //Toast.makeText(this, "No se han introducido los cambios correctamente", Toast.LENGTH_LONG).show()
+                startActivity(intent)*/
+                Toast.makeText(this, "No se han introducido los datos correctamente", Toast.LENGTH_LONG).show()
             }
         }
 

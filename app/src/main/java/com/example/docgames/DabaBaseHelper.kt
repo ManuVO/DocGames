@@ -10,7 +10,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     DATABASE_VERSION) {
     companion object {
         // If you change the database schema, you must increment the database version.
-        const val DATABASE_VERSION = 1
+        const val DATABASE_VERSION = 2
         const val DATABASE_NAME = "MySQLDataBase"
 
         private val USUARIO = "usuario"
@@ -19,22 +19,23 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private val USUARIO_EMAIL = "email"
         private val USUARIO_NOMBRE = "nombre"
         private val USUARIO_PASS = "pass"
-        // private val USUARIO_IMG = "img"
     }
 
-    private val CREAR_TABLA_USUARIO = ("CREATE TABLE " + USUARIO + "(" +
-            USUARIO_ID + "INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
-            USUARIO_EMAIL + "TEXT NOT NULL, " +
-            USUARIO_NOMBRE + "TEXT NOT NULL," +
-            USUARIO_PASS + "TEXT NOT NULL)" //+
-            //USUARIO_IMG + "BLOB "
-            )
-
+    //private val CREAR_TABLA_USUARIO = ("CREATE TABLE " + USUARIO + " (" +
+    //                USUARIO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+    //                USUARIO_EMAIL + " TEXT NOT NULL," +
+    //                USUARIO_NOMBRE + " TEXT NOT NULL," +
+    //                USUARIO_PASS + " TEXT NOT NULL" + ");")
 
     private val DROP_TABLA_USUARIO = "DROP TABLE IF EXISTS USUARIO"
 
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL(CREAR_TABLA_USUARIO)
+        //db.execSQL(CREAR_TABLA_USUARIO)
+        db.execSQL("CREATE TABLE " + USUARIO + " (" +
+                USUARIO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                USUARIO_EMAIL + " TEXT NOT NULL," +
+                USUARIO_NOMBRE + " TEXT NOT NULL," +
+                USUARIO_PASS + " TEXT NOT NULL" + ");")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -177,18 +178,21 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
          * SQL query equivalent to this query function is
          * SELECT user_id FROM user WHERE user_email = 'jack@androidtutorialshub.com' AND user_password = 'qwerty';
          */
-        val cursor = db.query(USUARIO, //Table to query
-            columns, //columns to return
-            selection, //columns for the WHERE clause
-            selectionArgs, //The values for the WHERE clause
-            null,  //group the rows
-            null, //filter by row groups
-            null) //The sort order
-        val cursorCount = cursor.count
-        cursor.close()
+        if(columns!=null){
+            val cursor = db.query(USUARIO, //Table to query
+                columns, //columns to return
+                selection, //columns for the WHERE clause
+                selectionArgs, //The values for the WHERE clause
+                null,  //group the rows
+                null, //filter by row groups
+                null) //The sort order
+            val cursorCount = cursor.count
+            cursor.close()
+            db.close()
+            if (cursorCount > 0)
+                return true
+        }
         db.close()
-        if (cursorCount > 0)
-            return true
         return false
     }
 }
