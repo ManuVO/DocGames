@@ -29,8 +29,8 @@ class Home : AppCompatActivity() {
         menuPopup.setOnMenuItemClickListener {  // establece funcionalidad a los botones del menu
             when(it.itemId){
                 R.id.id_menu_perfil -> {
-                    val intentPerfil = Intent(this,Perfil::class.java)
-                    startActivity(intentPerfil)
+                    val intent = Intent(this, Perfil::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.id_menu_juegos -> {
