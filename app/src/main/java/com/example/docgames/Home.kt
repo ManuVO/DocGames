@@ -43,5 +43,6 @@ class Home : AppCompatActivity() {
                 }else -> true
             }
         }
+        menuPopup.show()
     }
 }
