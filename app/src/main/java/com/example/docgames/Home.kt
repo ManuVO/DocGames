@@ -34,12 +34,15 @@ class Home : AppCompatActivity() {
                     true
                 }
                 R.id.id_menu_juegos -> {
-                    Toast.makeText(this, "Menu Popup", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, MisJuegos::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.id_menu_ajustes -> {
-                    Toast.makeText(this, "Menu Popup", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, Ajustes::class.java)
+                    startActivity(intent)
                     true
+
                 }else -> true
             }
         }
