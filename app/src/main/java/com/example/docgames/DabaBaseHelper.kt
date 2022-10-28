@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.example.docgames.Converters as Converters
 
 class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null,
     DATABASE_VERSION) {
@@ -13,13 +14,16 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val DATABASE_VERSION = 2
         const val DATABASE_NAME = "MySQLDataBase"
 
+        private val converters =  Converters()
+
         private val USUARIO = "usuario"
         // User Table Columns names
         private val USUARIO_ID = "id"
         private val USUARIO_EMAIL = "email"
         private val USUARIO_NOMBRE = "nombre"
         private val USUARIO_PASS = "pass"
-    }
+        private val USUARIO_IMG = "img"
+}
 
     //private val CREAR_TABLA_USUARIO = ("CREATE TABLE " + USUARIO + " (" +
     //                USUARIO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
@@ -35,7 +39,8 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 USUARIO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                 USUARIO_EMAIL + " TEXT NOT NULL," +
                 USUARIO_NOMBRE + " TEXT NOT NULL," +
-                USUARIO_PASS + " TEXT NOT NULL" + ");")
+                USUARIO_PASS + " TEXT NOT NULL" +
+                USUARIO_IMG + " BLOB NOT NULL" + ");")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -71,7 +76,8 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 val usuario = Usuario(id = cursor.getString(cursor.getColumnIndex(USUARIO_ID)).toInt(),
                     nombre = cursor.getString(cursor.getColumnIndex(USUARIO_NOMBRE)),
                     email = cursor.getString(cursor.getColumnIndex(USUARIO_EMAIL)),
-                    pass = cursor.getString(cursor.getColumnIndex(USUARIO_PASS)))
+                    pass = cursor.getString(cursor.getColumnIndex(USUARIO_PASS)),
+                    img = converters.toBitmap(cursor.getBlob(cursor.getColumnIndex(USUARIO_IMG))))
                 userList.add(usuario)
             } while (cursor.moveToNext())
         }
@@ -90,6 +96,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         values.put(USUARIO_NOMBRE, usuario.nombre)
         values.put(USUARIO_EMAIL, usuario.email)
         values.put(USUARIO_PASS, usuario.pass)
+        values.put(USUARIO_IMG, converters.fromBitmap(usuario.img))
         // Inserting Row
         db.insert(USUARIO, null, values)
         db.close()
