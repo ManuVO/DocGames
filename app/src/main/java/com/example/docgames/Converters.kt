@@ -9,9 +9,9 @@ class Converters {
 
     @TypeConverter
     //Función para pasar las imagenes al formato que acepta la base de datos
-    fun fromBitmap(bitmap: Bitmap): ByteArray{
+    fun fromBitmap(bitmap: Bitmap?): ByteArray{
         val outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
         return outputStream.toByteArray()
     }
     @TypeConverter

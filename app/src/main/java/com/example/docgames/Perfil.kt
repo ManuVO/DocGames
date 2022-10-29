@@ -1,18 +1,27 @@
 package com.example.docgames
 
 import android.content.Intent
+import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.EditText
+import android.widget.ImageView
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.TextView
+import coil.load
 import android.widget.Toast
 
 class Perfil : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        var usr : Usuario = getUsrLogged()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_perfil)
+        val nombreUsr : TextView = findViewById(R.id.txtNombreUsuario)
+        nombreUsr.text = usr.nombre
+        val imgUsr : ImageView = findViewById(R.id.ivImagenUsuario)
+        imgUsr.load(usr.img)
 
         val dataBaseHelper = DataBaseHelper(applicationContext)
         val intent : Intent = intent
@@ -53,5 +62,6 @@ class Perfil : AppCompatActivity() {
             }
         }
         menuPopup.show()
+
     }
 }

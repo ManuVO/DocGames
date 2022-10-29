@@ -41,7 +41,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 USUARIO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                 USUARIO_EMAIL + " TEXT NOT NULL," +
                 USUARIO_NOMBRE + " TEXT NOT NULL," +
-                USUARIO_PASS + " TEXT NOT NULL" +
+                USUARIO_PASS + " TEXT NOT NULL," +
                 USUARIO_IMG + " BLOB NULL" + ");")
 
         db.execSQL("CREATE TABLE " + VIDEOJUEGO + " (" +
@@ -69,7 +69,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     @SuppressLint("Range")
     fun getAllUser(): List<Usuario> {
         // array of columns to fetch
-        val columns = arrayOf(USUARIO_ID, USUARIO_EMAIL, USUARIO_NOMBRE, USUARIO_PASS)
+        val columns = arrayOf(USUARIO_ID, USUARIO_EMAIL, USUARIO_NOMBRE, USUARIO_PASS, USUARIO_IMG)
         // sorting orders
         val sortOrder = "$USUARIO_NOMBRE ASC"
         val userList = ArrayList<Usuario>()
@@ -250,6 +250,24 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
         db.close()
         return false
+    }
+    //Funcion para retornar el usuario loggeado
+    fun getUser(email: String) : Usuario{
+        val query = "SELECT * FROM $USUARIO WHERE $USUARIO_EMAIL = \"$email\""
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query, null)
+        var usuario: Usuario? = null;
+        if(cursor.moveToFirst()){
+            cursor.moveToFirst()
+
+            usuario = Usuario(id = Integer.parseInt(cursor.getString(0)),
+                nombre = cursor.getString(2),
+                email = cursor.getString(1),
+                pass = cursor.getString(3),
+                img = converters.toBitmap(cursor.getBlob(4)))
+        }
+        else usuario = Usuario(1,"","","", null)
+        return usuario
     }
 
     //**************PARTE DE VIDEOJUEGO**************//

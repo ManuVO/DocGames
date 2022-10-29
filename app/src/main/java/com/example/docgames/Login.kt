@@ -2,6 +2,7 @@ package com.example.docgames
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -9,6 +10,13 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 
+private var usrLogged : Usuario = Usuario(1,"","","", null)
+fun getUsrLogged():Usuario{
+    return usrLogged
+}
+fun setUsrLogged(usr:Usuario){
+    usrLogged = usr
+}
 class Login : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +38,7 @@ class Login : AppCompatActivity() {
                 val intent = Intent(this, Home::class.java)
                 intent.putExtra("email", email.text.toString())
                 intent.putExtra("pass", pass.text.toString())
+                usrLogged = dataBaseHelper.getUser(email.text.toString())
                 startActivity(intent)
             }
             else{
