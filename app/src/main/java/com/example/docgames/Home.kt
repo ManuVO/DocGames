@@ -28,6 +28,11 @@ class Home : AppCompatActivity() {
         menuPopup.inflate(R.menu.menu_home)  // importo el menu : menu_home.xml
         menuPopup.setOnMenuItemClickListener {  // establece funcionalidad a los botones del menu
             when(it.itemId){
+                R.id.id_menu_mhome -> {
+                    val intent = Intent(this, Home::class.java)
+                    startActivity(intent)
+                    true
+                }
                 R.id.id_menu_perfil -> {
                     val intent = Intent(this, Perfil::class.java)
                     startActivity(intent)

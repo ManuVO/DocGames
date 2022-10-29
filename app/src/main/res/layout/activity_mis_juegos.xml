@@ -29,11 +29,12 @@
 
     <ImageView
         android:id="@+id/igMenu"
-        android:layout_width="43dp"
-        android:layout_height="44dp"
+        android:layout_width="57dp"
+        android:layout_height="39dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="24dp"
+        android:layout_marginBottom="10dp"
         android:onClick="showMenu"
         app:layout_constraintEnd_toStartOf="@+id/logo_menu"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,26 +43,29 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_perfil"
-        android:layout_width="393dp"
-        android:layout_height="648dp"
+        android:layout_width="396dp"
+        android:layout_height="0dp"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:background="#FFF"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.481"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo_menu"
+        app:layout_constraintVertical_bias="0.0"
         tools:visibility="visible">
 
         <TextView
             android:id="@+id/txtMisJuegos"
-            android:layout_width="392dp"
+            android:layout_width="330dp"
             android:layout_height="40dp"
             android:layout_marginStart="5dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="5dp"
-            android:layout_marginBottom="590dp"
             android:background="#FFFFFF"
             android:fontFamily="sans-serif-black"
             android:text="Mis Juegos"
@@ -70,7 +74,6 @@
             android:textColorHighlight="@color/teal_700"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
