@@ -23,15 +23,17 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private val USUARIO_NOMBRE = "nombre"
         private val USUARIO_PASS = "pass"
         private val USUARIO_IMG = "img"
+
+        private val VIDEOJUEGO = "videojuego"
+        // User Table Columns names
+        private val VIDEOJUEGO_ID = "id"
+        private val VIDEOJUEGO_NOMBRE = "nombre"
+        private val VIDEOJUEGO_SINOPSIS = "sinopsis"
+        private val VIDEOJUEGO_IMG = "img"
 }
 
-    //private val CREAR_TABLA_USUARIO = ("CREATE TABLE " + USUARIO + " (" +
-    //                USUARIO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-    //                USUARIO_EMAIL + " TEXT NOT NULL," +
-    //                USUARIO_NOMBRE + " TEXT NOT NULL," +
-    //                USUARIO_PASS + " TEXT NOT NULL" + ");")
-
     private val DROP_TABLA_USUARIO = "DROP TABLE IF EXISTS USUARIO"
+    private val DROP_TABLA_VIDEOJUEGO = "DROP TABLE IF EXISTS VIDEOJUEGO"
 
     override fun onCreate(db: SQLiteDatabase) {
         //db.execSQL(CREAR_TABLA_USUARIO)
@@ -40,18 +42,27 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 USUARIO_EMAIL + " TEXT NOT NULL," +
                 USUARIO_NOMBRE + " TEXT NOT NULL," +
                 USUARIO_PASS + " TEXT NOT NULL" +
-                USUARIO_IMG + " BLOB NOT NULL" + ");")
+                USUARIO_IMG + " BLOB NULL" + ");")
+
+        db.execSQL("CREATE TABLE " + VIDEOJUEGO + " (" +
+                VIDEOJUEGO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                VIDEOJUEGO_NOMBRE + " TEXT NOT NULL," +
+                VIDEOJUEGO_SINOPSIS + " TEXT NOT NULL," +
+                VIDEOJUEGO_IMG + " BLOB NULL" + ");")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         //Drop User Table if exist
         db.execSQL(DROP_TABLA_USUARIO)
+        db.execSQL(DROP_TABLA_VIDEOJUEGO)
         // Create tables again
         onCreate(db)
     }
 
+    //**************PARTE DE USUARIO**************//
+
     /**
-     * This method is to fetch all user and return the list of user records
+     * Este metodo reune y devuelve una lista con todos los usuarios
      *
      * @return list
      */
@@ -86,9 +97,47 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return userList
     }
     /**
-     * This method is to create user record
+     * This method is to fetch all user and return the list of user records
      *
-     * @param user
+     * @return list
+     */
+    @SuppressLint("Range")
+    fun getUserByEmail(email: String): Usuario? {
+        val db = this.readableDatabase
+        // query user table with condition
+        /**
+         * Here query function is used to fetch records from user table this function works like we use sql query.
+         * SQL query equivalent to this query function is
+         * SELECT user_id FROM user WHERE user_email = 'jack@androidtutorialshub.com';
+         */
+        val cursor = db.query(USUARIO, //Table to query
+            null,        //columns to return
+            "usuario.email == '" + email + "'",      //columns for the WHERE clause
+            null,  //The values for the WHERE clause
+            null,  //group the rows
+            null,   //filter by row groups
+            null)  //The sort order
+        with(cursor) {
+            if (moveToFirst()){
+                val itemID = getInt(getColumnIndexOrThrow("id"))
+                val itemNombre = getString(getColumnIndexOrThrow("nombre"))
+                val itemEmail = getString(getColumnIndexOrThrow("email"))
+                val itemPass = getString(getColumnIndexOrThrow("pass"))
+                val itemImg = converters.toBitmap(getBlob(getColumnIndexOrThrow("img")))
+                var user : Usuario = Usuario(itemID, itemNombre, itemEmail, itemPass, itemImg)
+                cursor.close()
+                db.close()
+                return user
+            }
+            else{
+                return null;
+            }
+        }
+    }
+    /**
+     * Este método agrega usuarios
+     *
+     * @param usuario
      */
     fun addUser(usuario: Usuario) {
         val db = this.writableDatabase
@@ -97,14 +146,14 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         values.put(USUARIO_EMAIL, usuario.email)
         values.put(USUARIO_PASS, usuario.pass)
         values.put(USUARIO_IMG, converters.fromBitmap(usuario.img))
-        // Inserting Row
+        // Se inserta la fila
         db.insert(USUARIO, null, values)
         db.close()
     }
     /**
-     * This method to update user record
+     * Este método actualiza usuarios
      *
-     * @param user
+     * @param usuario
      */
     fun updateUser(usuario: Usuario) {
         val db = this.writableDatabase
@@ -118,9 +167,9 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.close()
     }
     /**
-     * This method is to delete user record
+     * Este método elimina usuarios
      *
-     * @param user
+     * @param usuario
      */
     fun deleteUser(usuario: Usuario) {
         val db = this.writableDatabase
@@ -130,7 +179,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.close()
     }
     /**
-     * This method to check user exist or not
+     * Este método verifica si el usuario existe o no
      *
      * @param email
      * @return true/false
@@ -145,9 +194,9 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val selectionArgs = arrayOf(email)
         // query user table with condition
         /**
-         * Here query function is used to fetch records from user table this function works like we use sql query.
-         * SQL query equivalent to this query function is
-         * SELECT user_id FROM user WHERE user_email = 'jack@androidtutorialshub.com';
+         * Utilizamos el siguiente método como si fuera una query de SQL normal.
+         * La SQL query equivalente a este metodo es
+         * SELECT id FROM usuario WHERE email = 'ejemplo@ejemplo.com';
          */
         val cursor = db.query(USUARIO, //Table to query
             columns,        //columns to return
@@ -165,7 +214,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return false
     }
     /**
-     * This method to check user exist or not
+     * Este método verifica si el usuario existe o no
      *
      * @param email
      * @param password
@@ -175,15 +224,15 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         // array of columns to fetch
         val columns = arrayOf(USUARIO_ID)
         val db = this.readableDatabase
-        // selection criteria
+        // criterio de selección
         val selection = "$USUARIO_EMAIL = ? AND $USUARIO_PASS = ?"
         // selection arguments
         val selectionArgs = arrayOf(email, password)
         // query user table with conditions
         /**
-         * Here query function is used to fetch records from user table this function works like we use sql query.
-         * SQL query equivalent to this query function is
-         * SELECT user_id FROM user WHERE user_email = 'jack@androidtutorialshub.com' AND user_password = 'qwerty';
+         * Utilizamos el siguiente método como si fuera una query de SQL normal.
+         * La SQL query equivalente a este metodo es
+         * SELECT id FROM usuario WHERE email = 'ejemplo@ejemplo.com' AND pass = 'ejemplo';
          */
         if(columns!=null){
             val cursor = db.query(USUARIO, //Table to query
@@ -202,5 +251,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.close()
         return false
     }
+
+    //**************PARTE DE VIDEOJUEGO**************//
 
 }
