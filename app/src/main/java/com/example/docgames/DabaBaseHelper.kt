@@ -10,14 +10,13 @@ import com.example.docgames.Converters as Converters
 class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null,
     DATABASE_VERSION) {
     companion object {
-        // If you change the database schema, you must increment the database version.
         const val DATABASE_VERSION = 2
         const val DATABASE_NAME = "MySQLDataBase"
 
         private val converters =  Converters()
 
         private val USUARIO = "usuario"
-        // User Table Columns names
+        // Nombre de las columnas de la tabla usuario
         private val USUARIO_ID = "id"
         private val USUARIO_EMAIL = "email"
         private val USUARIO_NOMBRE = "nombre"
@@ -25,18 +24,24 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private val USUARIO_IMG = "img"
 
         private val VIDEOJUEGO = "videojuego"
-        // User Table Columns names
+        // Nombre de las columnas de la tabla videojuego
         private val VIDEOJUEGO_ID = "id"
         private val VIDEOJUEGO_NOMBRE = "nombre"
         private val VIDEOJUEGO_SINOPSIS = "sinopsis"
         private val VIDEOJUEGO_IMG = "img"
+
+        private val USERGAME = "usergame"
+        // Nombre de las columnas de la tabla usergame
+        private val USERGAME_USUARIO = "idUsuario"
+        private val USERGAME_VIDEOJUEGO = "idVideojuego"
+        private val USERGAME_ESTADO = "estado"
 }
 
     private val DROP_TABLA_USUARIO = "DROP TABLE IF EXISTS USUARIO"
     private val DROP_TABLA_VIDEOJUEGO = "DROP TABLE IF EXISTS VIDEOJUEGO"
+    private val DROP_TABLA_USERGAME = "DROP TABLE IF EXISTS USERGAME"
 
     override fun onCreate(db: SQLiteDatabase) {
-        //db.execSQL(CREAR_TABLA_USUARIO)
         db.execSQL("CREATE TABLE " + USUARIO + " (" +
                 USUARIO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                 USUARIO_EMAIL + " TEXT NOT NULL," +
@@ -49,13 +54,18 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 VIDEOJUEGO_NOMBRE + " TEXT NOT NULL," +
                 VIDEOJUEGO_SINOPSIS + " TEXT NOT NULL," +
                 VIDEOJUEGO_IMG + " BLOB NULL" + ");")
+        db.execSQL("CREATE TABLE " + USERGAME + " (" +
+                USERGAME_USUARIO + " INTEGER FOREIGN KEY NOT NULL," +
+                USERGAME_VIDEOJUEGO + " INTEGER FOREIGN KEY NOT NULL," +
+                USERGAME_ESTADO + " TEXT NOT NULL" + ");")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         //Drop User Table if exist
         db.execSQL(DROP_TABLA_USUARIO)
         db.execSQL(DROP_TABLA_VIDEOJUEGO)
-        // Create tables again
+        db.execSQL(DROP_TABLA_USERGAME)
+        // Vuelve a crear las tablas
         onCreate(db)
     }
 
@@ -68,13 +78,12 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
      */
     @SuppressLint("Range")
     fun getAllUser(): List<Usuario> {
-        // array of columns to fetch
+        // Array de las columnas a añadir
         val columns = arrayOf(USUARIO_ID, USUARIO_EMAIL, USUARIO_NOMBRE, USUARIO_PASS, USUARIO_IMG)
-        // sorting orders
+        // Tipo de orden
         val sortOrder = "$USUARIO_NOMBRE ASC"
         val userList = ArrayList<Usuario>()
         val db = this.readableDatabase
-        // query the user table
         val cursor = db.query(USUARIO, //Table to query
             columns,            //columns to return
             null,     //columns for the WHERE clause
@@ -97,19 +106,13 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return userList
     }
     /**
-     * This method is to fetch all user and return the list of user records
+     * Este metodo busca y devuelve a un usuario por su email
      *
      * @return list
      */
     @SuppressLint("Range")
     fun getUserByEmail(email: String): Usuario? {
         val db = this.readableDatabase
-        // query user table with condition
-        /**
-         * Here query function is used to fetch records from user table this function works like we use sql query.
-         * SQL query equivalent to this query function is
-         * SELECT user_id FROM user WHERE user_email = 'jack@androidtutorialshub.com';
-         */
         val cursor = db.query(USUARIO, //Table to query
             null,        //columns to return
             "usuario.email == '" + email + "'",      //columns for the WHERE clause
@@ -173,7 +176,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
      */
     fun deleteUser(usuario: Usuario) {
         val db = this.writableDatabase
-        // delete user record by id
+        // Elimina un usuario por id
         db.delete(USUARIO, "$USUARIO_ID = ?",
             arrayOf(usuario.id.toString()))
         db.close()
@@ -185,14 +188,10 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
      * @return true/false
      */
     fun checkUser(email: String): Boolean {
-        // array of columns to fetch
         val columns = arrayOf(USUARIO_ID)
         val db = this.readableDatabase
-        // selection criteria
         val selection = "$USUARIO_EMAIL = ?"
-        // selection argument
         val selectionArgs = arrayOf(email)
-        // query user table with condition
         /**
          * Utilizamos el siguiente método como si fuera una query de SQL normal.
          * La SQL query equivalente a este metodo es
@@ -221,14 +220,10 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
      * @return true/false
      */
     fun checkUser(email: String, password: String): Boolean {
-        // array of columns to fetch
         val columns = arrayOf(USUARIO_ID)
         val db = this.readableDatabase
-        // criterio de selección
         val selection = "$USUARIO_EMAIL = ? AND $USUARIO_PASS = ?"
-        // selection arguments
         val selectionArgs = arrayOf(email, password)
-        // query user table with conditions
         /**
          * Utilizamos el siguiente método como si fuera una query de SQL normal.
          * La SQL query equivalente a este metodo es
@@ -272,4 +267,224 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     //**************PARTE DE VIDEOJUEGO**************//
 
+    /**
+     * Este metodo reune y devuelve una lista con todos los usuarios
+     *
+     * @return list
+     */
+    @SuppressLint("Range")
+    fun getAllGames(): List<Videojuego> {
+        val columns = arrayOf(VIDEOJUEGO_ID, VIDEOJUEGO_NOMBRE, VIDEOJUEGO_SINOPSIS, VIDEOJUEGO_IMG)
+        val sortOrder = "$VIDEOJUEGO_NOMBRE ASC"
+        val gameList = ArrayList<Videojuego>()
+        val db = this.readableDatabase
+        val cursor = db.query(VIDEOJUEGO, //Table to query
+            columns,            //columns to return
+            null,     //columns for the WHERE clause
+            null,  //The values for the WHERE clause
+            null,      //group the rows
+            null,       //filter by row groups
+            sortOrder)         //The sort order
+        if (cursor.moveToFirst()) {
+            do {
+                val videojuego = Videojuego(id = cursor.getString(cursor.getColumnIndex(VIDEOJUEGO_ID)).toInt(),
+                    nombre = cursor.getString(cursor.getColumnIndex(VIDEOJUEGO_NOMBRE)),
+                    sinopsis = cursor.getString(cursor.getColumnIndex(VIDEOJUEGO_SINOPSIS)),
+                    img = converters.toBitmap(cursor.getBlob(cursor.getColumnIndex(VIDEOJUEGO_IMG))))
+                gameList.add(videojuego)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return gameList
+    }
+    /**
+     * Este metodo obtiene todos los juegos en funcion de un nombre
+     *
+     * @return list
+     */
+    @SuppressLint("Range")
+    fun getGameByName(nombre: String): List<Videojuego>? {
+        val columns = arrayOf(VIDEOJUEGO_ID, VIDEOJUEGO_NOMBRE, VIDEOJUEGO_SINOPSIS, VIDEOJUEGO_IMG)
+        val sortOrder = "$VIDEOJUEGO_NOMBRE ASC"
+        val gameList = ArrayList<Videojuego>()
+        val db = this.readableDatabase
+        /**
+         * La SQL query equivalente a este metodo es
+         * SELECT * FROM videojuego WHERE nombre = 'ejemplo';
+         */
+        val cursor = db.query(
+            VIDEOJUEGO, //Table to query
+            columns,        //columns to return
+            "videojuego.nombre LIKE '%" + nombre + "%'",      //columns for the WHERE clause
+            null,  //The values for the WHERE clause
+            null,  //group the rows
+            null,   //filter by row groups
+            sortOrder)  //The sort order
+        if (cursor.moveToFirst()) {
+            do {
+                val videojuego = Videojuego(id = cursor.getString(cursor.getColumnIndex(VIDEOJUEGO_ID)).toInt(),
+                    nombre = cursor.getString(cursor.getColumnIndex(VIDEOJUEGO_NOMBRE)),
+                    sinopsis = cursor.getString(cursor.getColumnIndex(VIDEOJUEGO_SINOPSIS)),
+                    img = converters.toBitmap(cursor.getBlob(cursor.getColumnIndex(VIDEOJUEGO_IMG))))
+                gameList.add(videojuego)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return gameList
+    }
+    /**
+     * Este método agrega videojuegos
+     *
+     * @param videojuego
+     */
+    fun addGame(videojuego: Videojuego) {
+        val db = this.writableDatabase
+        val values = ContentValues()
+        values.put(VIDEOJUEGO_NOMBRE, videojuego.nombre)
+        values.put(VIDEOJUEGO_SINOPSIS, videojuego.sinopsis)
+        values.put(VIDEOJUEGO_IMG, converters.fromBitmap(videojuego.img))
+        // Se inserta la fila
+        db.insert(VIDEOJUEGO, null, values)
+        db.close()
+    }
+    /**
+     * Este método actualiza videojuegos
+     *
+     * @param videojuego
+     */
+    fun updateGame(videojuego: Videojuego) {
+        val db = this.writableDatabase
+        val values = ContentValues()
+        values.put(VIDEOJUEGO_NOMBRE, videojuego.nombre)
+        values.put(VIDEOJUEGO_SINOPSIS, videojuego.sinopsis)
+        values.put(VIDEOJUEGO_IMG, converters.fromBitmap(videojuego.img))
+        // updating row
+        db.update(VIDEOJUEGO, values, "$VIDEOJUEGO_ID = ?",
+            arrayOf(videojuego.id.toString()))
+        db.close()
+    }
+    /**
+     * Este método elimina videojuegos
+     *
+     * @param videojuego
+     */
+    fun deleteGame(videojuego: Videojuego) {
+        val db = this.writableDatabase
+        db.delete(VIDEOJUEGO, "$VIDEOJUEGO_ID = ?",
+            arrayOf(videojuego.id.toString()))
+        db.close()
+    }
+    /**
+     * Este método verifica si el videojuego existe o no
+     *
+     * @param nombre
+     * @return true/false
+     */
+    fun checkGame(nombre: String): Boolean {
+        // array of columns to fetch
+        val columns = arrayOf(VIDEOJUEGO_ID)
+        val db = this.readableDatabase
+        // selection criteria
+        val selection = "$VIDEOJUEGO_NOMBRE = ?"
+        // selection argument
+        val selectionArgs = arrayOf(nombre)
+        // query user table with condition
+        /**
+         * La SQL query equivalente a este metodo es
+         * SELECT id FROM videojuego WHERE nombre = 'ejemplo';
+         */
+        val cursor = db.query(
+            VIDEOJUEGO, //Table to query
+            columns,        //columns to return
+            selection,      //columns for the WHERE clause
+            selectionArgs,  //The values for the WHERE clause
+            null,  //group the rows
+            null,   //filter by row groups
+            null)  //The sort order
+        val cursorCount = cursor.count
+        cursor.close()
+        db.close()
+        if (cursorCount > 0) {
+            return true
+        }
+        return false
+    }
+
+    //Aqui empieza la tabla de union entre usuarios y videojuegos
+
+    /**
+     * Este método agrega el estado de un videojuego a un usuario
+     *
+     * @param videojuego
+     */
+    fun addUserGame(userGame: UserGame) {
+        val db = this.writableDatabase
+        val values = ContentValues()
+        values.put(USERGAME_USUARIO, userGame.idUsuario)
+        values.put(USERGAME_VIDEOJUEGO, userGame.idVideojuego)
+        values.put(USERGAME_ESTADO, userGame.estado)
+        // Se inserta la fila
+        db.insert(USERGAME, null, values)
+        db.close()
+    }
+    /**
+     * Este método actualiza el estado de un videojuego a un usuario
+     *
+     * @param videojuego
+     */
+    fun updateUserGame(userGame: UserGame) {
+        val db = this.writableDatabase
+        val values = ContentValues()
+        values.put(USERGAME_USUARIO, userGame.idUsuario)
+        values.put(USERGAME_VIDEOJUEGO, userGame.idVideojuego)
+        values.put(USERGAME_ESTADO, userGame.estado)
+        // Se actualiza la fila
+        db.update(USERGAME, values, "$USERGAME_USUARIO = ? AND $USERGAME_VIDEOJUEGO = ?",
+            arrayOf(userGame.idUsuario.toString(), userGame.idVideojuego.toString()))
+        db.close()
+    }
+    /**
+     * Este método elimina el estado de un videojuego a un usuario
+     *
+     * @param videojuego
+     */
+    fun deleteUserGame(userGame: UserGame) {
+        val db = this.writableDatabase
+        db.delete(USERGAME, "$USERGAME_USUARIO = ? AND $USERGAME_VIDEOJUEGO = ?",
+            arrayOf(userGame.idUsuario.toString(), userGame.idVideojuego.toString()))
+        db.close()
+    }
+    /**
+     * Este metodo reune y devuelve una lista con todos los videojuegos relacionados con los usuarios
+     *
+     * @return list
+     */
+    @SuppressLint("Range")
+    fun getAllUserGame(): List<UserGame> {
+        // array of columns to fetch
+        val columns = arrayOf(USERGAME_USUARIO, USERGAME_VIDEOJUEGO, USERGAME_ESTADO)
+        val userGameList = ArrayList<UserGame>()
+        val db = this.readableDatabase
+        // query the user table
+        val cursor = db.query(VIDEOJUEGO, //Table to query
+            columns,            //columns to return
+            null,     //columns for the WHERE clause
+            null,  //The values for the WHERE clause
+            null,      //group the rows
+            null,       //filter by row groups
+            null)         //The sort order
+        if (cursor.moveToFirst()) {
+            do {
+                val userGame = UserGame(idUsuario = cursor.getString(cursor.getColumnIndex(USERGAME_USUARIO)).toInt(),
+                    idVideojuego = cursor.getString(cursor.getColumnIndex(USERGAME_VIDEOJUEGO)).toInt(),
+                    estado = cursor.getString(cursor.getColumnIndex(USERGAME_ESTADO)))
+                userGameList.add(userGame)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return userGameList
+    }
 }
