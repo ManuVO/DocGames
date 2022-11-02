@@ -1,7 +1,9 @@
 package com.example.docgames
 
+import android.R.attr.src
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.widget.Button
@@ -14,6 +16,9 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 class Register : AppCompatActivity() {
@@ -55,13 +60,26 @@ class Register : AppCompatActivity() {
         }
     }
 
-    private suspend fun getBitmap() : Bitmap {
+    private suspend fun getBitmap(): Bitmap {
+        /*
         val loading = ImageLoader(this)
         val request = ImageRequest.Builder(this)
             .data("https://avatars.githubusercontent.com/u/14994036?s=400&u=2832879700f03d4b37ae1c09645352a352b9d2d0&v=4")
             .build()
         val result = (loading.execute(request) as SuccessResult).drawable
         return (result as BitmapDrawable).bitmap
+        */
+
+        val loader = ImageLoader(this)
+        val request = ImageRequest.Builder(this)
+            .data("https://avatars.githubusercontent.com/u/14994036?s=400&u=2832879700f03d4b37ae1c09645352a352b9d2d0&v=4.jpg")
+            .allowHardware(false) // Disable hardware bitmaps.
+            .build()
+
+        val result = (loader.execute(request) as SuccessResult).drawable
+        //val result = loader.execute(request).drawable
+        val bitmap = (result as BitmapDrawable).bitmap
+        return bitmap
     }
 
 }

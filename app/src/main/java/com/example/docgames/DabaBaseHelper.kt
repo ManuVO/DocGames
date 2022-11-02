@@ -55,9 +55,11 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 VIDEOJUEGO_SINOPSIS + " TEXT NOT NULL," +
                 VIDEOJUEGO_IMG + " BLOB NULL" + ");")
         db.execSQL("CREATE TABLE " + USERGAME + " (" +
-                USERGAME_USUARIO + " INTEGER FOREIGN KEY NOT NULL," +
-                USERGAME_VIDEOJUEGO + " INTEGER FOREIGN KEY NOT NULL," +
-                USERGAME_ESTADO + " TEXT NOT NULL" + ");")
+                USERGAME_USUARIO + " INTEGER NOT NULL, " +
+                USERGAME_VIDEOJUEGO + " INTEGER NOT NULL, " +
+                USERGAME_ESTADO + " TEXT NOT NULL, " +
+                "FOREIGN KEY (" + USERGAME_USUARIO + ") REFERENCES " + USUARIO + "(" + USUARIO_ID + "), " +
+                "FOREIGN KEY (" + USERGAME_VIDEOJUEGO + ") REFERENCES " + VIDEOJUEGO + "(" + VIDEOJUEGO_ID + "));")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
