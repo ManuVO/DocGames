@@ -10,7 +10,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 
-private var usrLogged : Usuario = Usuario(1,"","","", null)
+private var usrLogged : Usuario = Usuario(1,"","","", null, null)
 fun getUsrLogged():Usuario{
     return usrLogged
 }

@@ -40,7 +40,7 @@ class Register : AppCompatActivity() {
             }
             else if(pass.text.toString().equals(confirmPass.text.toString())){
                 GlobalScope.launch {
-                    val usuario : Usuario = Usuario(-1,nombreUsuario.text.toString(),email.text.toString(),confirmPass.text.toString(), getBitmap())
+                    val usuario : Usuario = Usuario(-1,nombreUsuario.text.toString(),email.text.toString(),confirmPass.text.toString(), getBitmap(), "Introduce los datos: ")
                     dataBaseHelper.addUser(usuario)
                 }
                 Toast.makeText(this, "Te has registado correctamente", Toast.LENGTH_LONG).show()

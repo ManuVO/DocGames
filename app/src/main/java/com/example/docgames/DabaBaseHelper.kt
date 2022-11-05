@@ -10,7 +10,7 @@ import com.example.docgames.Converters as Converters
 class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null,
     DATABASE_VERSION) {
     companion object {
-        const val DATABASE_VERSION = 2
+        const val DATABASE_VERSION = 3
         const val DATABASE_NAME = "MySQLDataBase"
 
         private val converters =  Converters()
@@ -22,6 +22,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private val USUARIO_NOMBRE = "nombre"
         private val USUARIO_PASS = "pass"
         private val USUARIO_IMG = "img"
+        private val USUARIO_BIO = "bio"
 
         private val VIDEOJUEGO = "videojuego"
         // Nombre de las columnas de la tabla videojuego
@@ -47,7 +48,8 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 USUARIO_EMAIL + " TEXT NOT NULL," +
                 USUARIO_NOMBRE + " TEXT NOT NULL," +
                 USUARIO_PASS + " TEXT NOT NULL," +
-                USUARIO_IMG + " BLOB NULL" + ");")
+                USUARIO_IMG + " BLOB NULL," +
+                USUARIO_BIO + " TEXT" + ");")
 
         db.execSQL("CREATE TABLE " + VIDEOJUEGO + " (" +
                 VIDEOJUEGO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
@@ -99,7 +101,8 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                     nombre = cursor.getString(cursor.getColumnIndex(USUARIO_NOMBRE)),
                     email = cursor.getString(cursor.getColumnIndex(USUARIO_EMAIL)),
                     pass = cursor.getString(cursor.getColumnIndex(USUARIO_PASS)),
-                    img = converters.toBitmap(cursor.getBlob(cursor.getColumnIndex(USUARIO_IMG))))
+                    img = converters.toBitmap(cursor.getBlob(cursor.getColumnIndex(USUARIO_IMG))),
+                    biografia = cursor.getString(cursor.getColumnIndex(USUARIO_BIO)))
                 userList.add(usuario)
             } while (cursor.moveToNext())
         }
@@ -129,7 +132,8 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 val itemEmail = getString(getColumnIndexOrThrow("email"))
                 val itemPass = getString(getColumnIndexOrThrow("pass"))
                 val itemImg = converters.toBitmap(getBlob(getColumnIndexOrThrow("img")))
-                var user : Usuario = Usuario(itemID, itemNombre, itemEmail, itemPass, itemImg)
+                val itemBio = getString(getColumnIndexOrThrow("bio"))
+                var user : Usuario = Usuario(itemID, itemNombre, itemEmail, itemPass, itemImg, itemBio)
                 cursor.close()
                 db.close()
                 return user
@@ -166,6 +170,8 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         values.put(USUARIO_NOMBRE, usuario.nombre)
         values.put(USUARIO_EMAIL, usuario.email)
         values.put(USUARIO_PASS, usuario.pass)
+        values.put(USUARIO_IMG, converters.fromBitmap(usuario.img))
+        values.put(USUARIO_BIO,usuario.biografia)
         // updating row
         db.update(USUARIO, values, "$USUARIO_ID = ?",
             arrayOf(usuario.id.toString()))
@@ -261,9 +267,10 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 nombre = cursor.getString(2),
                 email = cursor.getString(1),
                 pass = cursor.getString(3),
-                img = converters.toBitmap(cursor.getBlob(4)))
+                img = converters.toBitmap(cursor.getBlob(4)),
+                biografia = cursor.getString(5))
         }
-        else usuario = Usuario(1,"","","", null)
+        else usuario = Usuario(1,"","","", null, null)
         return usuario
     }
 
