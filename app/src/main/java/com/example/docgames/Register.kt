@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -25,6 +26,9 @@ class Register : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+
+        //sonido boton pacman
+        val mediaPlayer : MediaPlayer = MediaPlayer.create(this, R.raw.pacman)
 
         // Inicializamos la variable de la BBDD
         val dataBaseHelper = DataBaseHelper(applicationContext)

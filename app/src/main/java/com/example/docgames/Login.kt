@@ -38,6 +38,8 @@ class Login : AppCompatActivity() {
         // Inicializamos la variable de la BBDD
         val dataBaseHelper = DataBaseHelper(applicationContext)
 
+        //sonido boton pacman
+        val mediaPlayer : MediaPlayer = MediaPlayer.create(this, R.raw.pacman)
 
         //BOTON DE INICIO DE SESIÓN
         val btnIniciarSesion : Button = findViewById(R.id.btnLogin)
