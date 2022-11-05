@@ -1,22 +1,33 @@
 package com.example.docgames
 
+import android.content.ContentResolver
 import android.content.Intent
+import android.media.MediaPlayer
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.PopupMenu
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 
-private var sonidoActivado : Boolean = true
-
 class Ajustes : AppCompatActivity() {
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ajustes)
+
+        val mediaPlayer : MediaPlayer = MediaPlayer.create(this, R.raw.pacman)
+        val botonLogout : Button = findViewById(R.id.btnlogout)
+        botonLogout.setOnClickListener {
+            if(getSonido()){
+                mediaPlayer.start()
+            }
+        }
+
+
 
         val intent : Intent = intent
         val email = intent.getStringExtra("email")
@@ -29,12 +40,7 @@ class Ajustes : AppCompatActivity() {
 
         val switchSonidoNotif : Switch = findViewById(R.id.switchSonidoNotif)  //switch
         switchSonidoNotif.setOnCheckedChangeListener { compoundButton, b ->
-            if(switchSonidoNotif.isChecked)
-            {
-                sonidoActivado = true       //sonido activado
-            } else{
-                sonidoActivado = false      //sonido desactivado
-            }
+            setSonido(b)
         }
     }
 
@@ -69,5 +75,4 @@ class Ajustes : AppCompatActivity() {
         }
         menuPopup.show()
     }
-
 }

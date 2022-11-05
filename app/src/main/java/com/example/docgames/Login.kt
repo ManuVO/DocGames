@@ -3,6 +3,7 @@ package com.example.docgames
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -11,12 +12,23 @@ import android.widget.TextView
 import android.widget.Toast
 
 private var usrLogged : Usuario = Usuario(1,"","","", null, null)
+
 fun getUsrLogged():Usuario{
     return usrLogged
 }
 fun setUsrLogged(usr:Usuario){
     usrLogged = usr
 }
+
+private var sonidoActivado : Boolean = true  //sonido
+
+fun getSonido() : Boolean{
+    return sonidoActivado
+}
+fun setSonido(Sonido : Boolean){
+    sonidoActivado = Sonido
+}
+
 class Login : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
