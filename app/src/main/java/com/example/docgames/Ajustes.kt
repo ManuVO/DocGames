@@ -5,10 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 
+private var sonidoActivado : Boolean = true
+
 class Ajustes : AppCompatActivity() {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +25,16 @@ class Ajustes : AppCompatActivity() {
         val logoMenu : TextView = findViewById(R.id.logo_menu)
         logoMenu.setOnClickListener {
             showMenu(logoMenu)
+        }
+
+        val switchSonidoNotif : Switch = findViewById(R.id.switchSonidoNotif)  //switch
+        switchSonidoNotif.setOnCheckedChangeListener { compoundButton, b ->
+            if(switchSonidoNotif.isChecked)
+            {
+                sonidoActivado = true       //sonido activado
+            } else{
+                sonidoActivado = false      //sonido desactivado
+            }
         }
     }
 
@@ -55,4 +69,5 @@ class Ajustes : AppCompatActivity() {
         }
         menuPopup.show()
     }
+
 }
