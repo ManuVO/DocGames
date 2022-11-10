@@ -3,7 +3,6 @@ package com.example.docgames
 import android.R.attr.src
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.widget.Button
@@ -16,9 +15,7 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
+import java.util.regex.*
 
 
 class Register : AppCompatActivity() {
@@ -34,11 +31,35 @@ class Register : AppCompatActivity() {
         val email : EditText = findViewById(R.id.ptEmail)
         val pass : EditText = findViewById(R.id.ptPass)
         val confirmPass : EditText = findViewById(R.id.ptConfirPass)
+
+        //Presionas el boton registrarse
         btnRegistrarse.setOnClickListener {
-            if(dataBaseHelper.checkUser(email.text.toString())) {
+
+            //Minimo 8 caracteres, una letra minuscula y otra mayuscula
+            val regexEmail = "^[^\\s@]+@([^\\s@.,]+\\.)+[^\\s@.,]{2,}$".toRegex()
+            val regexPass = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$".toRegex()
+
+
+            //Verifica el email
+            if(!regexEmail.matches(email.text.toString())){
+                println("---Email: " + email.text.toString())
+                Toast.makeText(this, "Email introducido incorrectamente", Toast.LENGTH_LONG).show()
+            }
+            //Verifica la contraseña
+            else if(!regexPass.matches(pass.text.toString())){
+                println("---Pass: " + pass.text.toString())
+                Toast.makeText(this, "La contraseña debe tener un mínimo de 8 caracteres, una letra minuscula y una mayuscula", Toast.LENGTH_LONG).show()
+            }
+            //Si ya existe el email
+            else if(dataBaseHelper.checkUser(email.text.toString())) {
                 Toast.makeText(this, "El email introducido ya existe", Toast.LENGTH_LONG).show()
             }
-            else if(pass.text.toString().equals(confirmPass.text.toString())){
+            //Si las contraseñas no coinciden
+            else if(!pass.text.toString().equals(confirmPass.text.toString())){
+                Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_LONG).show()
+            }
+            //Si las contraseñas coinciden
+            else{
                 GlobalScope.launch {
                     val usuario : Usuario = Usuario(-1,nombreUsuario.text.toString(),email.text.toString(),confirmPass.text.toString(), getBitmap())
                     dataBaseHelper.addUser(usuario)
@@ -47,10 +68,6 @@ class Register : AppCompatActivity() {
                 val intent = Intent(this, Login::class.java)
                 startActivity(intent)
             }
-            else{
-                Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_LONG).show()
-            }
-
         }
 
         val tvLogin : TextView = findViewById(R.id.tvIrLogin)
