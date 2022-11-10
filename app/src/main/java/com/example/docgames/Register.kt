@@ -4,6 +4,7 @@ import android.R.attr.src
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -22,6 +23,9 @@ class Register : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+
+        //sonido boton pacman
+        val mediaPlayer : MediaPlayer = MediaPlayer.create(this, R.raw.pacman)
 
         // Inicializamos la variable de la BBDD
         val dataBaseHelper = DataBaseHelper(applicationContext)
@@ -61,7 +65,7 @@ class Register : AppCompatActivity() {
             //Si las contraseñas coinciden
             else{
                 GlobalScope.launch {
-                    val usuario : Usuario = Usuario(-1,nombreUsuario.text.toString(),email.text.toString(),confirmPass.text.toString(), getBitmap())
+                    val usuario : Usuario = Usuario(-1,nombreUsuario.text.toString(),email.text.toString(),confirmPass.text.toString(), getBitmap(), "Introduce los datos: ")
                     dataBaseHelper.addUser(usuario)
                 }
                 Toast.makeText(this, "Te has registado correctamente", Toast.LENGTH_LONG).show()

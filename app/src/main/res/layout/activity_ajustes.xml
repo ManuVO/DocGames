@@ -42,7 +42,7 @@
         app:srcCompat="@drawable/ic_menu" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_perfil"
+        android:id="@+id/cl_ajustes"
         android:layout_width="396dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
@@ -58,6 +58,19 @@
         app:layout_constraintTop_toBottomOf="@+id/logo_menu"
         app:layout_constraintVertical_bias="0.0"
         tools:visibility="visible">
+
+        <Button
+            android:id="@+id/btnlogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:backgroundTint="@color/teal_200"
+            android:text="Cerrar Sesión"
+            app:iconTint="@color/teal_200"
+            android:soundEffectsEnabled="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/txtAjustes"
@@ -77,6 +90,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Switch
+            android:id="@+id/switchSonidoNotif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="165dp"
+            android:text="Activar/Desactivar sonido "
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:soundEffectsEnabled="false"
+            android:checked="true"
+            app:layout_constraintTop_toBottomOf="@+id/txtAjustes" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

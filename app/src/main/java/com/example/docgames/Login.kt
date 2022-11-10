@@ -3,6 +3,7 @@ package com.example.docgames
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -10,13 +11,24 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 
-private var usrLogged : Usuario = Usuario(1,"","","", null)
+private var usrLogged : Usuario = Usuario(1,"","","", null, null)
+
 fun getUsrLogged():Usuario{
     return usrLogged
 }
 fun setUsrLogged(usr:Usuario){
     usrLogged = usr
 }
+
+private var sonidoActivado : Boolean = true  //sonido
+
+fun getSonido() : Boolean{
+    return sonidoActivado
+}
+fun setSonido(Sonido : Boolean){
+    sonidoActivado = Sonido
+}
+
 class Login : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +38,8 @@ class Login : AppCompatActivity() {
         // Inicializamos la variable de la BBDD
         val dataBaseHelper = DataBaseHelper(applicationContext)
 
+        //sonido boton pacman
+        val mediaPlayer : MediaPlayer = MediaPlayer.create(this, R.raw.pacman)
 
         //BOTON DE INICIO DE SESIÓN
         val btnIniciarSesion : Button = findViewById(R.id.btnLogin)
