@@ -44,6 +44,9 @@ class Login : AppCompatActivity() {
         //BOTON DE INICIO DE SESIÓN
         val btnIniciarSesion : Button = findViewById(R.id.btnLogin)
         btnIniciarSesion.setOnClickListener {
+            if(getSonido()){
+                mediaPlayer.start()
+            }
             val email : EditText = findViewById(R.id.ptEmail)
             val pass : EditText = findViewById(R.id.ptPass)
             //USUARIO por defecto: admin CONTRASEÑA por defecto: admin

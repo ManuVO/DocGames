@@ -155,6 +155,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         values.put(USUARIO_EMAIL, usuario.email)
         values.put(USUARIO_PASS, usuario.pass)
         values.put(USUARIO_IMG, converters.fromBitmap(usuario.img))
+        values.put(USUARIO_BIO,usuario.biografia)
         // Se inserta la fila
         db.insert(USUARIO, null, values)
         db.close()
