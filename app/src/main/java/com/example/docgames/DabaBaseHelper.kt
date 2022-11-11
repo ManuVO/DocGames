@@ -7,13 +7,8 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.provider.MediaStore.Video
-import coil.request.SuccessResult
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -22,7 +17,7 @@ import java.net.URL
 class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null,
     DATABASE_VERSION) {
     companion object {
-        const val DATABASE_VERSION = 6
+        const val DATABASE_VERSION = 7
         const val DATABASE_NAME = "MySQLDataBase"
 
         private val converters =  Converters()
@@ -71,7 +66,6 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.execSQL("CREATE TABLE " + USERGAME + " (" +
                 USERGAME_USUARIO + " INTEGER NOT NULL, " +
                 USERGAME_VIDEOJUEGO + " INTEGER NOT NULL, " +
-                USERGAME_ESTADO + " TEXT NOT NULL, " +
                 "FOREIGN KEY (" + USERGAME_USUARIO + ") REFERENCES " + USUARIO + "(" + USUARIO_ID + "), " +
                 "FOREIGN KEY (" + USERGAME_VIDEOJUEGO + ") REFERENCES " + VIDEOJUEGO + "(" + VIDEOJUEGO_ID + "));")
 
@@ -369,41 +363,24 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.close()
         return gameList
     }
-    /**
-     * Este metodo obtiene todos los juegos en funcion de un nombre
-     *
-     * @return list
-     */
-    @SuppressLint("Range")
-    fun getGameByName(nombre: String): List<Videojuego>? {
-        val columns = arrayOf(VIDEOJUEGO_ID, VIDEOJUEGO_NOMBRE, VIDEOJUEGO_SINOPSIS, VIDEOJUEGO_IMG)
-        val sortOrder = "$VIDEOJUEGO_NOMBRE ASC"
-        val gameList = ArrayList<Videojuego>()
-        val db = this.readableDatabase
-        /**
-         * La SQL query equivalente a este metodo es
-         * SELECT * FROM videojuego WHERE nombre = 'ejemplo';
-         */
-        val cursor = db.query(
-            VIDEOJUEGO, //Table to query
-            columns,        //columns to return
-            "videojuego.nombre LIKE '%" + nombre + "%'",      //columns for the WHERE clause
-            null,  //The values for the WHERE clause
-            null,  //group the rows
-            null,   //filter by row groups
-            sortOrder)  //The sort order
-        if (cursor.moveToFirst()) {
-            do {
-                val videojuego = Videojuego(id = cursor.getString(cursor.getColumnIndex(VIDEOJUEGO_ID)).toInt(),
-                    nombre = cursor.getString(cursor.getColumnIndex(VIDEOJUEGO_NOMBRE)),
-                    sinopsis = cursor.getString(cursor.getColumnIndex(VIDEOJUEGO_SINOPSIS)),
-                    img = converters.toBitmap(cursor.getBlob(cursor.getColumnIndex(VIDEOJUEGO_IMG))))
-                gameList.add(videojuego)
-            } while (cursor.moveToNext())
+
+    ///para mostrar el juego -->Este metodo obtiene un jugo en funcion de un nombre
+
+    fun getJuego(nombre: String) : Videojuego{
+        val query = "SELECT * FROM $VIDEOJUEGO WHERE $VIDEOJUEGO_NOMBRE = \"$nombre\""
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query, null)
+        var videojuego: Videojuego? = null;
+        if(cursor.moveToFirst()){
+            cursor.moveToFirst()
+
+            videojuego = Videojuego(id = Integer.parseInt(cursor.getString(0)),
+                nombre = cursor.getString(1),
+                sinopsis = cursor.getString(2),
+                img = converters.toBitmap(cursor.getBlob(3)))
         }
-        cursor.close()
-        db.close()
-        return gameList
+        else videojuego = Videojuego(1,"","",null)
+        return videojuego
     }
     /**
      * Este método agrega videojuegos
@@ -495,7 +472,6 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val values = ContentValues()
         values.put(USERGAME_USUARIO, userGame.idUsuario)
         values.put(USERGAME_VIDEOJUEGO, userGame.idVideojuego)
-        values.put(USERGAME_ESTADO, userGame.estado)
         // Se inserta la fila
         db.insert(USERGAME, null, values)
         db.close()
@@ -510,7 +486,6 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val values = ContentValues()
         values.put(USERGAME_USUARIO, userGame.idUsuario)
         values.put(USERGAME_VIDEOJUEGO, userGame.idVideojuego)
-        values.put(USERGAME_ESTADO, userGame.estado)
         // Se actualiza la fila
         db.update(USERGAME, values, "$USERGAME_USUARIO = ? AND $USERGAME_VIDEOJUEGO = ?",
             arrayOf(userGame.idUsuario.toString(), userGame.idVideojuego.toString()))
@@ -535,7 +510,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     @SuppressLint("Range")
     fun getAllUserGame(): List<UserGame> {
         // array of columns to fetch
-        val columns = arrayOf(USERGAME_USUARIO, USERGAME_VIDEOJUEGO, USERGAME_ESTADO)
+        val columns = arrayOf(USERGAME_USUARIO, USERGAME_VIDEOJUEGO)
         val userGameList = ArrayList<UserGame>()
         val db = this.readableDatabase
         // query the user table
@@ -549,14 +524,41 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         if (cursor.moveToFirst()) {
             do {
                 val userGame = UserGame(idUsuario = cursor.getString(cursor.getColumnIndex(USERGAME_USUARIO)).toInt(),
-                    idVideojuego = cursor.getString(cursor.getColumnIndex(USERGAME_VIDEOJUEGO)).toInt(),
-                    estado = cursor.getString(cursor.getColumnIndex(USERGAME_ESTADO)))
+                    idVideojuego = cursor.getString(cursor.getColumnIndex(USERGAME_VIDEOJUEGO)).toInt())
                 userGameList.add(userGame)
             } while (cursor.moveToNext())
         }
         cursor.close()
         db.close()
         return userGameList
+    }
+
+    /**
+     * Este método verifica si el videojuego ya esta añadido a este usuario
+     *
+     * @param idJuego
+     * @return true/false
+     */
+    fun checkUserGame(idJuego: Int): Boolean {
+        val columns = arrayOf(USERGAME_USUARIO)
+        val db = this.readableDatabase
+        val selection = "$USERGAME_VIDEOJUEGO = ?"
+        val selectionArgs = arrayOf(idJuego.toString())
+
+        val cursor = db.query(USERGAME, //Table to query
+            columns,        //columns to return
+            selection,      //columns for the WHERE clause
+            selectionArgs,  //The values for the WHERE clause
+            null,  //group the rows
+            null,   //filter by row groups
+            null)  //The sort order
+        val cursorCount = cursor.count
+        cursor.close()
+        db.close()
+        if (cursorCount > 0) {
+            return false
+        }
+        return true
     }
 
     //************CONVERTIR URL EN BITMAP****************//
