@@ -39,6 +39,7 @@ class Ajustes : AppCompatActivity() {
         }
 
         val switchSonidoNotif : Switch = findViewById(R.id.switchSonidoNotif)  //switch
+        switchSonidoNotif.isChecked = getSonido()
         switchSonidoNotif.setOnCheckedChangeListener { compoundButton, b ->
             setSonido(b)
             if(getSonido()){

@@ -54,6 +54,9 @@ class Perfil : AppCompatActivity() {
         }
         val btnSave : Button = findViewById(R.id.btnGuardarPerfil)
         btnSave.setOnClickListener{
+            if(getSonido()){
+                mediaPlayer.start()
+            }
             val drawable : BitmapDrawable = imageView.drawable as BitmapDrawable
             usr.img = drawable.bitmap
             var getText : String = editText.text.toString()
