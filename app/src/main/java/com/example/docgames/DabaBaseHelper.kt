@@ -525,7 +525,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val url = URL(url)
         val connection : HttpURLConnection = url.openConnection() as HttpURLConnection
         connection.setDoInput(true)
-        connection.connect() as SuccessResult
+        connection.connect()
         val input: InputStream = connection.inputStream
         val myBitmap : Bitmap = BitmapFactory.decodeStream(input)
         return myBitmap
