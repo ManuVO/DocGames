@@ -2,12 +2,14 @@ package com.example.docgames
 
 import android.content.Intent
 import android.media.MediaPlayer
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.VideoView
 
 class Home : AppCompatActivity() {
 
@@ -21,6 +23,11 @@ class Home : AppCompatActivity() {
         val intent : Intent = intent
         val email = intent.getStringExtra("email")
         println(email)
+
+        //video de novedades
+        val videoView : VideoView = findViewById(R.id.videoView)
+        videoView.setVideoURI(Uri.parse("android.resource://" + packageName + "/" + R.raw.novedadpokemon))
+        videoView.start()
 
         val logoMenu : TextView = findViewById(R.id.logo_menu)
         logoMenu.setOnClickListener {
