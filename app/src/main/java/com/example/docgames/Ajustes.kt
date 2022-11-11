@@ -27,6 +27,9 @@ class Ajustes : AppCompatActivity() {
             if(getSonido()){
                 mediaPlayer.start()
             }
+            setUsrLogged(Usuario(1,"","","", null, null))
+            val intent = Intent(this, Login::class.java)
+            startActivity(intent)
         }
 
         val intent : Intent = intent

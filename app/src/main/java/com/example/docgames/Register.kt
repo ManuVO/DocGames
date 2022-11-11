@@ -41,18 +41,18 @@ class Register : AppCompatActivity() {
 
             //Minimo 8 caracteres, una letra minuscula y otra mayuscula
             val regexEmail = "^[^\\s@]+@([^\\s@.,]+\\.)+[^\\s@.,]{2,}$".toRegex()
-            val regexPass = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$".toRegex()
+            val regexPass = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$".toRegex()
 
 
             //Verifica el email
             if(!regexEmail.matches(email.text.toString())){
                 println("---Email: " + email.text.toString())
-                Toast.makeText(this, "Email introducido incorrectamente", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "El email tiene que tener un formato ejemplo@ejemplo.com", Toast.LENGTH_LONG).show()
             }
             //Verifica la contraseña
             else if(!regexPass.matches(pass.text.toString())){
                 println("---Pass: " + pass.text.toString())
-                Toast.makeText(this, "La contraseña debe tener un mínimo de 8 caracteres, una letra minuscula y una mayuscula", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "La contraseña debe tener un mínimo de 8 caracteres, una letra minuscula, una mayuscula y un dígito", Toast.LENGTH_LONG).show()
             }
             //Si ya existe el email
             else if(dataBaseHelper.checkUser(email.text.toString())) {

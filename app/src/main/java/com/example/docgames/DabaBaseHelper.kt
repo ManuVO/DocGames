@@ -5,7 +5,17 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.docgames.Converters as Converters
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.IOException
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
+
 
 class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null,
     DATABASE_VERSION) {
@@ -62,6 +72,20 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 USERGAME_ESTADO + " TEXT NOT NULL, " +
                 "FOREIGN KEY (" + USERGAME_USUARIO + ") REFERENCES " + USUARIO + "(" + USUARIO_ID + "), " +
                 "FOREIGN KEY (" + USERGAME_VIDEOJUEGO + ") REFERENCES " + VIDEOJUEGO + "(" + VIDEOJUEGO_ID + "));")
+
+
+        GlobalScope.launch {
+            //***********INSERT VIDEOJUEGOS***************//
+            db.execSQL("INSERT INTO " + VIDEOJUEGO + " (" +
+                    "VALUES (-1, " +
+                    "Pokemon Soulsilver, " +
+                    "Prepárate para una emocionante aventura con Pokémon SoulSilver para la consola Nintendo DS. " +
+                    "Ponte en la piel de un entrenador o entrenadora Pokémon y lucha en la región de Johto con tus " +
+                    "Pokémon para conseguir la victoria., " +
+                    getBitmap("https://m.media-amazon.com/images/I/517ZggTk5PL._AC_.jpg") + ");")
+        }
+
+
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -496,5 +520,26 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         cursor.close()
         db.close()
         return userGameList
+    }
+
+    //************CONVERTIR URL EN BITMAP****************//
+    private suspend fun getBitmap(url : String): Bitmap? {
+        try {
+            val url = URL(url)
+            val connection: HttpURLConnection =
+                withContext(Dispatchers.IO) {
+                    url.openConnection()
+                } as HttpURLConnection
+            connection.doInput = true
+            withContext(Dispatchers.IO) {
+                connection.connect()
+            }
+            val input: InputStream = connection.inputStream
+            val myBitmap : Bitmap = BitmapFactory.decodeStream(input)
+            return myBitmap
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return null
     }
 }
