@@ -18,15 +18,14 @@ class Home : AppCompatActivity() {
     lateinit var listAdapter: ArrayAdapter<String>
 
     // creating array list for listview
-    lateinit var programmingLanguagesList: ArrayList<String>;
-
+    lateinit var juegosList: ArrayList<String>;
     // creating variable for searchview
     lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-
+        val dataBaseHelper = DataBaseHelper(applicationContext)
         //sonido boton pacman
         val mediaPlayer: MediaPlayer = MediaPlayer.create(this, R.raw.pacman)
         var cerrado: Boolean = true
@@ -64,22 +63,19 @@ class Home : AppCompatActivity() {
         })
 
         // initializing list and adding data to list
-        programmingLanguagesList = ArrayList()
-        programmingLanguagesList.add("C")
-        programmingLanguagesList.add("C#")
-        programmingLanguagesList.add("Java")
-        programmingLanguagesList.add("Javascript")
-        programmingLanguagesList.add("Python")
-        programmingLanguagesList.add("Dart")
-        programmingLanguagesList.add("Kotlin")
-        programmingLanguagesList.add("Typescript")
+        juegosList = ArrayList()
+        val listaTemporal: List<String>  = dataBaseHelper.getAllGamesName()
+
+            for(juego in listaTemporal){
+                juegosList.add(juego)
+            }
 
         // initializing list adapter and setting layout
         // for each list view item and adding array list to it.
         listAdapter = ArrayAdapter<String>(
             this,
             android.R.layout.simple_list_item_1,
-            programmingLanguagesList
+            juegosList
         )
 
         // on below line setting list
@@ -92,7 +88,7 @@ class Home : AppCompatActivity() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 // on below line we are checking
                 // if query exist or not.
-                if (programmingLanguagesList.contains(query)) {
+                if (juegosList.contains(query)) {
                     // if query exist within list we
                     // are filtering our list adapter.
                     listAdapter.filter.filter(query)

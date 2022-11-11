@@ -22,7 +22,7 @@ import java.net.URL
 class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null,
     DATABASE_VERSION) {
     companion object {
-        const val DATABASE_VERSION = 3
+        const val DATABASE_VERSION = 5
         const val DATABASE_NAME = "MySQLDataBase"
 
         private val converters =  Converters()
@@ -83,6 +83,9 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                     "Pokémon para conseguir la victoria."
             val image : Bitmap = getBitmap("https://m.media-amazon.com/images/I/517ZggTk5PL._AC_.jpg")
             addGame(Videojuego(-1, "Pokemon Soulsilver", text,  image))
+            val textJuego2 : String = "Disfruta de la tranquilidad en tu isla"
+            val imageJuego2 : Bitmap = getBitmap("https://m.media-amazon.com/images/I/61bdAphKt7L._AC_.jpg")
+            addGame(Videojuego(-1, "Animal Crossing New Leaf", textJuego2,  imageJuego2))
         }
     }
 
@@ -324,6 +327,28 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                     sinopsis = cursor.getString(cursor.getColumnIndex(VIDEOJUEGO_SINOPSIS)),
                     img = converters.toBitmap(cursor.getBlob(cursor.getColumnIndex(VIDEOJUEGO_IMG))))
                 gameList.add(videojuego)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return gameList
+    }
+    fun getAllGamesName(): List<String> {
+        val columns = arrayOf(VIDEOJUEGO_NOMBRE)
+        val sortOrder = "$VIDEOJUEGO_NOMBRE ASC"
+        val gameList = ArrayList<String>()
+        val db = this.readableDatabase
+        val cursor = db.query(VIDEOJUEGO, //Table to query
+            columns,            //columns to return
+            null,     //columns for the WHERE clause
+            null,  //The values for the WHERE clause
+            null,      //group the rows
+            null,       //filter by row groups
+            sortOrder)         //The sort order
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst()
+            do {
+                gameList.add(cursor.getString(0))
             } while (cursor.moveToNext())
         }
         cursor.close()
