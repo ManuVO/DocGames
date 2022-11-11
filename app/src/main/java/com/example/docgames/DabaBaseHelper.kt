@@ -60,7 +60,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 USUARIO_EMAIL + " TEXT NOT NULL," +
                 USUARIO_NOMBRE + " TEXT NOT NULL," +
                 USUARIO_PASS + " TEXT NOT NULL," +
-                USUARIO_IMG + " BLOB NULL," +
+                USUARIO_IMG + " BLOB," +
                 USUARIO_BIO + " TEXT" + ");")
 
         db.execSQL("CREATE TABLE " + VIDEOJUEGO + " (" +
@@ -444,12 +444,12 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return false
     }
 
-    //Aqui empieza la tabla de union entre usuarios y videojuegos
+    //************* Parte de usuarios y videojuegos *************//
 
     /**
      * Este método agrega el estado de un videojuego a un usuario
      *
-     * @param videojuego
+     * @param userGame
      */
     fun addUserGame(userGame: UserGame) {
         val db = this.writableDatabase
@@ -464,7 +464,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     /**
      * Este método actualiza el estado de un videojuego a un usuario
      *
-     * @param videojuego
+     * @param userGame
      */
     fun updateUserGame(userGame: UserGame) {
         val db = this.writableDatabase
@@ -480,7 +480,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     /**
      * Este método elimina el estado de un videojuego a un usuario
      *
-     * @param videojuego
+     * @param userGame
      */
     fun deleteUserGame(userGame: UserGame) {
         val db = this.writableDatabase
