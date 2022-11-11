@@ -22,7 +22,7 @@ import java.net.URL
 class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null,
     DATABASE_VERSION) {
     companion object {
-        const val DATABASE_VERSION = 5
+        const val DATABASE_VERSION = 6
         const val DATABASE_NAME = "MySQLDataBase"
 
         private val converters =  Converters()
@@ -78,14 +78,28 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         GlobalScope.launch {
             //***********INSERT VIDEOJUEGOS***************//
-            val text : String = "Prepárate para una emocionante aventura con Pokémon SoulSilver para la consola Nintendo DS. " +
+            var text : String = "Prepárate para una emocionante aventura con Pokémon SoulSilver para la consola Nintendo DS. " +
                     "Ponte en la piel de un entrenador o entrenadora Pokémon y lucha en la región de Johto con tus " +
                     "Pokémon para conseguir la victoria."
-            val image : Bitmap = getBitmap("https://m.media-amazon.com/images/I/517ZggTk5PL._AC_.jpg")
+            var image : Bitmap = getBitmap("https://m.media-amazon.com/images/I/517ZggTk5PL._AC_.jpg")
             addGame(Videojuego(-1, "Pokemon Soulsilver", text,  image))
-            val textJuego2 : String = "Disfruta de la tranquilidad en tu isla"
-            val imageJuego2 : Bitmap = getBitmap("https://m.media-amazon.com/images/I/61bdAphKt7L._AC_.jpg")
-            addGame(Videojuego(-1, "Animal Crossing New Leaf", textJuego2,  imageJuego2))
+            text = "Una de las sagas más populares de los últimos años llega a la 3DS dando un giro total en experiencias " +
+                    "y jugabilidad. En esta ocasión el jugador se convertirá en el alcalde y tendrá en sus manos " +
+                    "un gran número de diseños y posibilidades de personalización."
+            image  = getBitmap("https://m.media-amazon.com/images/I/61bdAphKt7L._AC_.jpg")
+            addGame(Videojuego(-1, "Animal Crossing New Leaf", text,  image))
+            text = "¡Abajo los cables...es la hora de realizar una carrera en toda libertad! MarioKart, la serie de gran " +
+                    "éxito permite ahora a los jugadores competir demanera simultánea en los circuitos. Una distribución " +
+                    "prestigiosa compuesta principalmente por Mario,Luigi, Peach, Yoshi, Donkey Kong, Wario, Bowser y Toad " +
+                    "que se añaden a este título de éxito."
+            image  = getBitmap("https://m.media-amazon.com/images/I/51CIc6ggYtL._AC_.jpg")
+            addGame(Videojuego(-1, "Mario Kart DS", text,  image))
+            text = "Los controles táctiles y los puzles sorprendentes toman la saga Zelda. En The Legend of Zelda: Phantom " +
+                    "Hourglass el jugador encontrará a un LInk perdido surcando los mares. Sin duda es la jugabilidad la que " +
+                    "cuenta con toda la atención, posibilitando el hecho de mover a link mediante el stylus de la portátil " +
+                    "de Nintendo."
+            image  = getBitmap("https://m.media-amazon.com/images/I/617qj3dhb-L._AC_.jpg")
+            addGame(Videojuego(-1, "The legend of Zelda: Phantom Hourglass", text,  image))
         }
     }
 

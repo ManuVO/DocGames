@@ -12,10 +12,11 @@ import java.security.AccessController.getContext
 class Home : AppCompatActivity() {
 
     // creating variables for listview
-    lateinit var programmingLanguagesLV: ListView
+    lateinit var juegosListView : ListView
 
     // creating array adapter for listview
     lateinit var listAdapter: ArrayAdapter<String>
+
 
     // creating array list for listview
     lateinit var juegosList: ArrayList<String>;
@@ -44,7 +45,7 @@ class Home : AppCompatActivity() {
         }
         val relativeLayout: RelativeLayout = findViewById(R.id.cl_buscarjuego)
         // initializing variables of list view with their ids.
-        programmingLanguagesLV = findViewById(R.id.idListaJuegos)
+        juegosListView = findViewById(R.id.idListaJuegos)
         searchView = findViewById(R.id.id_buscarjuegos)
         searchView.setOnQueryTextFocusChangeListener(object : View.OnFocusChangeListener{
             override fun onFocusChange(p0: View?, p1: Boolean) {
@@ -61,8 +62,8 @@ class Home : AppCompatActivity() {
                 }
             }
         })
-
-        // initializing list and adding data to list
+        // Inicializamos la lista y le cargamos los nombres de todos los
+        // juegos que hay en la base de datos en orden alfabetico
         juegosList = ArrayList()
         val listaTemporal: List<String>  = dataBaseHelper.getAllGamesName()
 
@@ -80,7 +81,7 @@ class Home : AppCompatActivity() {
 
         // on below line setting list
         // adapter to our list view.
-        programmingLanguagesLV.adapter = listAdapter
+        juegosListView.adapter = listAdapter
 
         // on below line we are adding on query
         // listener for our search view.
@@ -95,20 +96,26 @@ class Home : AppCompatActivity() {
                 } else {
                     // if query is not present we are displaying
                     // a toast message as no  data found..
-                    Toast.makeText(this@Home, "No Language found..", Toast.LENGTH_LONG)
+                    Toast.makeText(this@Home, "No hay ningún juego con ese nombre.", Toast.LENGTH_LONG)
                         .show()
                 }
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                // if query text is change in that case we
-                // are filtering our adapter with
-                // new text on below line.
+                //Si cambia el texto de la busqueda
+                //filtramos de nuevo para ver si hay alguna coincidencia
                 listAdapter.filter.filter(newText)
                 return false
             }
         })
+        juegosListView.setOnItemClickListener { parent, view, position, id ->
+            val element = listAdapter.getItem(position) // The item that was clicked
+            Toast.makeText(this@Home, element, Toast.LENGTH_LONG)
+                .show()
+            //val intent = Intent(this, BookDetailActivity::class.java)
+            //startActivity(intent)
+        }
 
 
 
