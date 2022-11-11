@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.provider.MediaStore.Video
+import coil.request.SuccessResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -76,16 +78,12 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         GlobalScope.launch {
             //***********INSERT VIDEOJUEGOS***************//
-            db.execSQL("INSERT INTO " + VIDEOJUEGO + " (" +
-                    "VALUES (-1, " +
-                    "Pokemon Soulsilver, " +
-                    "Prepárate para una emocionante aventura con Pokémon SoulSilver para la consola Nintendo DS. " +
+            val text : String = "Prepárate para una emocionante aventura con Pokémon SoulSilver para la consola Nintendo DS. " +
                     "Ponte en la piel de un entrenador o entrenadora Pokémon y lucha en la región de Johto con tus " +
-                    "Pokémon para conseguir la victoria., " +
-                    getBitmap("https://m.media-amazon.com/images/I/517ZggTk5PL._AC_.jpg") + ");")
+                    "Pokémon para conseguir la victoria."
+            val image : Bitmap = getBitmap("https://m.media-amazon.com/images/I/517ZggTk5PL._AC_.jpg")
+            addGame(Videojuego(-1, "Pokemon Soulsilver", text,  image))
         }
-
-
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -523,23 +521,13 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     //************CONVERTIR URL EN BITMAP****************//
-    private suspend fun getBitmap(url : String): Bitmap? {
-        try {
-            val url = URL(url)
-            val connection: HttpURLConnection =
-                withContext(Dispatchers.IO) {
-                    url.openConnection()
-                } as HttpURLConnection
-            connection.doInput = true
-            withContext(Dispatchers.IO) {
-                connection.connect()
-            }
-            val input: InputStream = connection.inputStream
-            val myBitmap : Bitmap = BitmapFactory.decodeStream(input)
-            return myBitmap
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return null
+    private suspend fun getBitmap(url : String): Bitmap {
+        val url = URL(url)
+        val connection : HttpURLConnection = url.openConnection() as HttpURLConnection
+        connection.setDoInput(true)
+        connection.connect() as SuccessResult
+        val input: InputStream = connection.inputStream
+        val myBitmap : Bitmap = BitmapFactory.decodeStream(input)
+        return myBitmap
     }
 }
