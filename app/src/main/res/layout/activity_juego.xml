@@ -59,8 +59,8 @@
 
         <EditText
             android:id="@+id/txtNombreJuego"
-            android:layout_width="341dp"
-            android:layout_height="52dp"
+            android:layout_width="347dp"
+            android:layout_height="84dp"
             android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
@@ -93,8 +93,8 @@
 
         <ScrollView
             android:id="@+id/svSinopsisJuego"
-            android:layout_width="317dp"
-            android:layout_height="155dp"
+            android:layout_width="310dp"
+            android:layout_height="98dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="30dp"

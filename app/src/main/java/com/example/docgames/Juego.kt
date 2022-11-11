@@ -5,9 +5,8 @@ import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.PopupMenu
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import coil.load
 
 class Juego : AppCompatActivity() {
 
@@ -18,9 +17,32 @@ class Juego : AppCompatActivity() {
         //sonido boton pacman
         val mediaPlayer : MediaPlayer = MediaPlayer.create(this, R.raw.pacman)
 
+        val dataBaseHelper = DataBaseHelper(applicationContext)
         val intent : Intent = intent
         val email = intent.getStringExtra("email")
-        println(email)
+        val nombreJuego = intent.getStringExtra("Nombrejuego")
+        val juegoShow : Videojuego = dataBaseHelper.getJuego(nombreJuego.toString())
+
+        val nombreJuegoShow : TextView = findViewById(R.id.txtNombreJuego)
+        nombreJuegoShow.text = juegoShow.nombre
+        val imageView : ImageView = findViewById(R.id.ivImagenJuego)
+        imageView.load(juegoShow.img)
+
+        val textViewSinopsis : TextView = findViewById(R.id.txtSinopsisJuego)
+        textViewSinopsis.text = juegoShow.sinopsis
+
+        val botonAñadirColeccion : Button = findViewById(R.id.btnAñadirAColeccion)
+        botonAñadirColeccion.setOnClickListener {
+            if(dataBaseHelper.checkUserGame(juegoShow.id)){
+                val userLogged : Usuario = getUsrLogged()
+                val userGame : UserGame = UserGame(userLogged.id, juegoShow.id)
+                dataBaseHelper.addUserGame(userGame)
+                Toast.makeText(this@Juego, "Juego añadido correctamente al usuario.", Toast.LENGTH_LONG)
+                    .show()
+            }else
+                Toast.makeText(this@Juego, "Ya has añadido el juego previamente a tu coleccion.", Toast.LENGTH_LONG)
+                    .show()
+        }
 
         val logoMenu : TextView = findViewById(R.id.logo_menu)
         logoMenu.setOnClickListener {

@@ -111,15 +111,10 @@ class Home : AppCompatActivity() {
         })
         juegosListView.setOnItemClickListener { parent, view, position, id ->
             val element = listAdapter.getItem(position) // The item that was clicked
-            Toast.makeText(this@Home, element, Toast.LENGTH_LONG)
-                .show()
-            //val intent = Intent(this, BookDetailActivity::class.java)
-            //startActivity(intent)
+            val intent = Intent(this, Juego::class.java)
+            intent.putExtra("Nombrejuego", element)
+            startActivity(intent)
         }
-
-
-
-
 
     }
     public fun showMenu(v: View){
