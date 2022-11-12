@@ -35,40 +35,26 @@ class Juego : AppCompatActivity() {
 
         val botonAnadirColeccion : Button = findViewById(R.id.btnAnadirAColeccion)
         val botonEliminarColeccion : Button = findViewById(R.id.btnEliminarColeccion)
-        if(dataBaseHelper.checkUserGamebyId(getUsrLogged().id,juegoShow.id)){
-            botonAnadirColeccion.bringToFront()
-            botonAnadirColeccion.isClickable = true
-            botonAnadirColeccion.visibility= View.VISIBLE
-            botonEliminarColeccion.isClickable = false
-            botonEliminarColeccion.visibility= View.INVISIBLE
+        if(dataBaseHelper.checkUserGamebyId(getUsrLogged().id,juegoShow.id))
+            setButtonAdd(botonAnadirColeccion, botonEliminarColeccion)
+        else
+            setButtonDelete(botonAnadirColeccion, botonEliminarColeccion)
 
-            botonAnadirColeccion.setOnClickListener{
-                val userLogged : Usuario = getUsrLogged()
-                val userGame : UserGame = UserGame(userLogged.id, juegoShow.id)
-                dataBaseHelper.addUserGame(userGame)
-                Toast.makeText(this@Juego, "Juego añadido correctamente al usuario.", Toast.LENGTH_LONG)
-                    .show()
-                val intent = Intent(this, Juego::class.java)
-                intent.putExtra("Nombrejuego", nombreJuego)
-                startActivity(intent)
-            }
-        }else{
-            botonEliminarColeccion.bringToFront()
-            botonAnadirColeccion.isClickable = false
-            botonAnadirColeccion.visibility= View.INVISIBLE
-            botonEliminarColeccion.isClickable = true
-            botonEliminarColeccion.visibility= View.VISIBLE
-
-            botonEliminarColeccion.setOnClickListener{
-                val userLogged : Usuario = getUsrLogged()
-                val userGame : UserGame = UserGame(userLogged.id, juegoShow.id)
-                dataBaseHelper.deleteUserGame(userGame)
-                Toast.makeText(this@Juego, "Juego eliminado correctamente del usuario.", Toast.LENGTH_LONG)
-                    .show()
-                val intent = Intent(this, Juego::class.java)
-                intent.putExtra("Nombrejuego", nombreJuego)
-                startActivity(intent)
-            }
+        botonAnadirColeccion.setOnClickListener{
+            val userLogged : Usuario = getUsrLogged()
+            val userGame : UserGame = UserGame(userLogged.id, juegoShow.id)
+            dataBaseHelper.addUserGame(userGame)
+            Toast.makeText(this@Juego, "Juego añadido correctamente al usuario.", Toast.LENGTH_LONG)
+                .show()
+            setButtonDelete(botonAnadirColeccion, botonEliminarColeccion)
+        }
+        botonEliminarColeccion.setOnClickListener{
+            val userLogged : Usuario = getUsrLogged()
+            val userGame : UserGame = UserGame(userLogged.id, juegoShow.id)
+            dataBaseHelper.deleteUserGame(userGame)
+            Toast.makeText(this@Juego, "Juego eliminado correctamente del usuario.", Toast.LENGTH_LONG)
+                .show()
+            setButtonAdd(botonAnadirColeccion, botonEliminarColeccion)
         }
 
         val logoMenu : TextView = findViewById(R.id.logo_menu)
@@ -125,5 +111,19 @@ class Juego : AppCompatActivity() {
             }
         }
         menuPopup.show()
+    }
+    private fun setButtonDelete(botonAnadir : Button, botonEliminar : Button){
+        botonEliminar.bringToFront()
+        botonAnadir.isClickable = false
+        botonAnadir.visibility= View.INVISIBLE
+        botonEliminar.isClickable = true
+        botonEliminar.visibility= View.VISIBLE
+    }
+    private fun setButtonAdd(botonAnadir : Button, botonEliminar : Button){
+        botonAnadir.bringToFront()
+        botonAnadir.isClickable = true
+        botonAnadir.visibility= View.VISIBLE
+        botonEliminar.isClickable = false
+        botonEliminar.visibility= View.INVISIBLE
     }
 }
