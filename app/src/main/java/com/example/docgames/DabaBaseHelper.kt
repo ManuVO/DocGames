@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.InputStream
@@ -42,7 +43,6 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         // Nombre de las columnas de la tabla usergame
         private val USERGAME_USUARIO = "idUsuario"
         private val USERGAME_VIDEOJUEGO = "idVideojuego"
-        private val USERGAME_ESTADO = "estado"
 }
 
     private val DROP_TABLA_USUARIO = "DROP TABLE IF EXISTS USUARIO"
@@ -70,31 +70,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 "FOREIGN KEY (" + USERGAME_VIDEOJUEGO + ") REFERENCES " + VIDEOJUEGO + "(" + VIDEOJUEGO_ID + "));")
 
 
-        GlobalScope.launch {
-            //***********INSERT VIDEOJUEGOS***************//
-            var text : String = "Prepárate para una emocionante aventura con Pokémon SoulSilver para la consola Nintendo DS. " +
-                    "Ponte en la piel de un entrenador o entrenadora Pokémon y lucha en la región de Johto con tus " +
-                    "Pokémon para conseguir la victoria."
-            var image : Bitmap = getBitmap("https://m.media-amazon.com/images/I/517ZggTk5PL._AC_.jpg")
-            addGame(Videojuego(-1, "Pokemon Soulsilver", text,  image))
-            text = "Una de las sagas más populares de los últimos años llega a la 3DS dando un giro total en experiencias " +
-                    "y jugabilidad. En esta ocasión el jugador se convertirá en el alcalde y tendrá en sus manos " +
-                    "un gran número de diseños y posibilidades de personalización."
-            image  = getBitmap("https://m.media-amazon.com/images/I/61bdAphKt7L._AC_.jpg")
-            addGame(Videojuego(-1, "Animal Crossing New Leaf", text,  image))
-            text = "¡Abajo los cables...es la hora de realizar una carrera en toda libertad! MarioKart, la serie de gran " +
-                    "éxito permite ahora a los jugadores competir demanera simultánea en los circuitos. Una distribución " +
-                    "prestigiosa compuesta principalmente por Mario,Luigi, Peach, Yoshi, Donkey Kong, Wario, Bowser y Toad " +
-                    "que se añaden a este título de éxito."
-            image  = getBitmap("https://m.media-amazon.com/images/I/51CIc6ggYtL._AC_.jpg")
-            addGame(Videojuego(-1, "Mario Kart DS", text,  image))
-            text = "Los controles táctiles y los puzles sorprendentes toman la saga Zelda. En The Legend of Zelda: Phantom " +
-                    "Hourglass el jugador encontrará a un LInk perdido surcando los mares. Sin duda es la jugabilidad la que " +
-                    "cuenta con toda la atención, posibilitando el hecho de mover a link mediante el stylus de la portátil " +
-                    "de Nintendo."
-            image  = getBitmap("https://m.media-amazon.com/images/I/617qj3dhb-L._AC_.jpg")
-            addGame(Videojuego(-1, "The legend of Zelda: Phantom Hourglass", text,  image))
-        }
+
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -154,6 +130,39 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val cursor = db.query(USUARIO, //Table to query
             null,        //columns to return
             "usuario.email == '" + email + "'",      //columns for the WHERE clause
+            null,  //The values for the WHERE clause
+            null,  //group the rows
+            null,   //filter by row groups
+            null)  //The sort order
+        with(cursor) {
+            if (moveToFirst()){
+                val itemID = getInt(getColumnIndexOrThrow("id"))
+                val itemNombre = getString(getColumnIndexOrThrow("nombre"))
+                val itemEmail = getString(getColumnIndexOrThrow("email"))
+                val itemPass = getString(getColumnIndexOrThrow("pass"))
+                val itemImg = converters.toBitmap(getBlob(getColumnIndexOrThrow("img")))
+                val itemBio = getString(getColumnIndexOrThrow("bio"))
+                var user : Usuario = Usuario(itemID, itemNombre, itemEmail, itemPass, itemImg, itemBio)
+                cursor.close()
+                db.close()
+                return user
+            }
+            else{
+                return null;
+            }
+        }
+    }
+    /**
+     * Este metodo busca y devuelve a un usuario por su id
+     *
+     * @return list
+     */
+    @SuppressLint("Range")
+    fun getUserById(id: Int): Usuario? {
+        val db = this.readableDatabase
+        val cursor = db.query(USUARIO, //Table to query
+            null,        //columns to return
+            "usuario.email == '" + id + "'",      //columns for the WHERE clause
             null,  //The values for the WHERE clause
             null,  //group the rows
             null,   //filter by row groups
@@ -311,7 +320,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     //**************PARTE DE VIDEOJUEGO**************//
 
     /**
-     * Este metodo reune y devuelve una lista con todos los usuarios
+     * Este metodo reune y devuelve una lista con todos los videojuegos
      *
      * @return list
      */
@@ -341,6 +350,11 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.close()
         return gameList
     }
+    /**
+     * Este metodo reune y devuelve una lista de los nombres de todos los videojuegos
+     *
+     * @return list
+     */
     fun getAllGamesName(): List<String> {
         val columns = arrayOf(VIDEOJUEGO_NOMBRE)
         val sortOrder = "$VIDEOJUEGO_NOMBRE ASC"
@@ -363,11 +377,34 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.close()
         return gameList
     }
-
-    ///para mostrar el juego -->Este metodo obtiene un jugo en funcion de un nombre
-
+    /**
+     * Este metodo devuelve un videojuego en función de un nombre
+     *
+     * @return Videojuego
+     */
     fun getJuego(nombre: String) : Videojuego{
         val query = "SELECT * FROM $VIDEOJUEGO WHERE $VIDEOJUEGO_NOMBRE = \"$nombre\""
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query, null)
+        var videojuego: Videojuego? = null;
+        if(cursor.moveToFirst()){
+            cursor.moveToFirst()
+
+            videojuego = Videojuego(id = Integer.parseInt(cursor.getString(0)),
+                nombre = cursor.getString(1),
+                sinopsis = cursor.getString(2),
+                img = converters.toBitmap(cursor.getBlob(3)))
+        }
+        else videojuego = Videojuego(1,"","",null)
+        return videojuego
+    }
+    /**
+     * Este metodo devuelve un videojuego en función de un id
+     *
+     * @return Videojuego
+     */
+    fun getJuegoById(id: Int) : Videojuego{
+        val query = "SELECT * FROM $VIDEOJUEGO WHERE $VIDEOJUEGO_ID = \"$id\""
         val db = this.writableDatabase
         val cursor = db.rawQuery(query, null)
         var videojuego: Videojuego? = null;
@@ -463,7 +500,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     //************* Parte de usuarios y videojuegos *************//
 
     /**
-     * Este método agrega el estado de un videojuego a un usuario
+     * Este método relaciona un videojuego a un usuario
      *
      * @param userGame
      */
@@ -492,7 +529,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.close()
     }
     /**
-     * Este método elimina el estado de un videojuego a un usuario
+     * Este método elimina la relación de un videojuego con un usuario
      *
      * @param userGame
      */
@@ -532,7 +569,26 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.close()
         return userGameList
     }
-
+    /**
+     * Este metodo devuelve todos los videojuegos relacionados con el id de un usuario
+     *
+     * @return List
+     */
+    @SuppressLint("Range")
+    fun getAllGamesByUserId(id: Int) : List<Videojuego>{
+        val query = "SELECT $USERGAME_VIDEOJUEGO FROM $USERGAME WHERE $USERGAME_USUARIO = \"$id\""
+        val db = this.writableDatabase
+        val gameList = ArrayList<Videojuego>()
+        val cursor = db.rawQuery(query, null)
+        if (cursor.moveToFirst()) {
+            do {
+                gameList.add(getJuegoById(cursor.getString(cursor.getColumnIndex(USERGAME_VIDEOJUEGO)).toInt()))
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return gameList
+    }
     /**
      * Este método verifica si el videojuego ya esta añadido a este usuario
      *
@@ -560,15 +616,24 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
         return true
     }
-
-    //************CONVERTIR URL EN BITMAP****************//
-    private suspend fun getBitmap(url : String): Bitmap {
-        val url = URL(url)
-        val connection : HttpURLConnection = url.openConnection() as HttpURLConnection
-        connection.setDoInput(true)
-        connection.connect()
-        val input: InputStream = connection.inputStream
-        val myBitmap : Bitmap = BitmapFactory.decodeStream(input)
-        return myBitmap
+    /**
+     * Este metodo devuelve todos los videojuegos relacionados con el id de un usuario
+     *
+     * @return List
+     */
+    @SuppressLint("Range")
+    fun checkUserGamebyId(idUser: Int, idGame: Int) : Boolean{
+        val query = "SELECT * FROM $USERGAME WHERE $USERGAME_USUARIO = \"$idUser\" AND $USERGAME_VIDEOJUEGO = \"$idGame\""
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(query, null)
+        val cursorCount = cursor.count
+        cursor.close()
+        db.close()
+        if (cursorCount > 0) {
+            return false
+        }
+        return true
     }
+
+
 }

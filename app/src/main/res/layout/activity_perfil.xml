@@ -126,11 +126,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:hint="Cuentame sobre tus juegos favoritos"
                 android:inputType="textMultiLine"
                 android:overScrollMode="always"
                 android:scrollbarStyle="insideInset"
-                android:scrollbars="vertical"
-                android:text="Introduce los datos" />
+                android:scrollbars="vertical" />
 
         </ScrollView>
 

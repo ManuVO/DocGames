@@ -4,16 +4,22 @@ import android.content.Intent
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore.Video
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
-class MisJuegos : AppCompatActivity() {
+class MisJuegos : AppCompatActivity(),RecyclerViewInterface {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mis_juegos)
+        val dataBaseHelper = DataBaseHelper(applicationContext)
 
         val mediaPlayer : MediaPlayer = MediaPlayer.create(this, R.raw.pacman)
 
@@ -25,6 +31,14 @@ class MisJuegos : AppCompatActivity() {
         logoMenu.setOnClickListener {
             showMenu(logoMenu)
         }
+
+        val rvListaJuegos : RecyclerView = findViewById(R.id.rvListaJuegos)
+        val listaJuegosUsuario: List<Videojuego> = dataBaseHelper.getAllGamesByUserId(getUsrLogged().id)
+        //val listaJuegosUsuario: List<Videojuego>  = dataBaseHelper.getAllGames()
+        val adapter = V_RecyclerViewAdapter(this, listaJuegosUsuario, this)
+        rvListaJuegos.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        rvListaJuegos.adapter = adapter
+
     }
     public fun showMenu(v: View){
 
@@ -75,5 +89,17 @@ class MisJuegos : AppCompatActivity() {
             }
         }
         menuPopup.show()
+    }
+
+    private fun listaJuegos() : List<Videojuego>{
+        val dataBaseHelper = DataBaseHelper(applicationContext)
+        val listaJuegosUsuario: List<Videojuego> = dataBaseHelper.getAllGamesByUserId(getUsrLogged().id)
+        return listaJuegosUsuario
+    }
+
+    override fun onItemClick(position: Int) {
+        val intent = Intent(this, Juego::class.java)
+        intent.putExtra("Nombrejuego", listaJuegos().get(position).nombre)
+        startActivity(intent)
     }
 }

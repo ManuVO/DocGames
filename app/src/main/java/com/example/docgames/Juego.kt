@@ -1,5 +1,6 @@
 package com.example.docgames
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,7 @@ import coil.load
 
 class Juego : AppCompatActivity() {
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_juego)
@@ -31,17 +33,42 @@ class Juego : AppCompatActivity() {
         val textViewSinopsis : TextView = findViewById(R.id.txtSinopsisJuego)
         textViewSinopsis.text = juegoShow.sinopsis
 
-        val botonAñadirColeccion : Button = findViewById(R.id.btnAñadirAColeccion)
-        botonAñadirColeccion.setOnClickListener {
-            if(dataBaseHelper.checkUserGame(juegoShow.id)){
+        val botonAnadirColeccion : Button = findViewById(R.id.btnAnadirAColeccion)
+        val botonEliminarColeccion : Button = findViewById(R.id.btnEliminarColeccion)
+        if(dataBaseHelper.checkUserGamebyId(getUsrLogged().id,juegoShow.id)){
+            botonAnadirColeccion.bringToFront()
+            botonAnadirColeccion.isClickable = true
+            botonAnadirColeccion.visibility= View.VISIBLE
+            botonEliminarColeccion.isClickable = false
+            botonEliminarColeccion.visibility= View.INVISIBLE
+
+            botonAnadirColeccion.setOnClickListener{
                 val userLogged : Usuario = getUsrLogged()
                 val userGame : UserGame = UserGame(userLogged.id, juegoShow.id)
                 dataBaseHelper.addUserGame(userGame)
                 Toast.makeText(this@Juego, "Juego añadido correctamente al usuario.", Toast.LENGTH_LONG)
                     .show()
-            }else
-                Toast.makeText(this@Juego, "Ya has añadido el juego previamente a tu coleccion.", Toast.LENGTH_LONG)
+                val intent = Intent(this, Juego::class.java)
+                intent.putExtra("Nombrejuego", nombreJuego)
+                startActivity(intent)
+            }
+        }else{
+            botonEliminarColeccion.bringToFront()
+            botonAnadirColeccion.isClickable = false
+            botonAnadirColeccion.visibility= View.INVISIBLE
+            botonEliminarColeccion.isClickable = true
+            botonEliminarColeccion.visibility= View.VISIBLE
+
+            botonEliminarColeccion.setOnClickListener{
+                val userLogged : Usuario = getUsrLogged()
+                val userGame : UserGame = UserGame(userLogged.id, juegoShow.id)
+                dataBaseHelper.deleteUserGame(userGame)
+                Toast.makeText(this@Juego, "Juego eliminado correctamente del usuario.", Toast.LENGTH_LONG)
                     .show()
+                val intent = Intent(this, Juego::class.java)
+                intent.putExtra("Nombrejuego", nombreJuego)
+                startActivity(intent)
+            }
         }
 
         val logoMenu : TextView = findViewById(R.id.logo_menu)

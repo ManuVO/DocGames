@@ -63,6 +63,8 @@ class Perfil : AppCompatActivity() {
             usr.biografia = getText
             dataBaseHelper.updateUser(usr)
             setUsrLogged(usr)
+
+            Toast.makeText(this, "Se han realizado los cambios correctamente", Toast.LENGTH_LONG).show()
         }
     }
     public fun showMenu(v: View){

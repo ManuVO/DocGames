@@ -1,5 +1,6 @@
 package com.example.docgames
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
@@ -7,9 +8,11 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import java.security.AccessController.getContext
 
-class Home : AppCompatActivity() {
+class Home : AppCompatActivity(),RecyclerViewInterface {
 
     // creating variables for listview
     lateinit var juegosListView : ListView
@@ -23,6 +26,7 @@ class Home : AppCompatActivity() {
     // creating variable for searchview
     lateinit var searchView: SearchView
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
@@ -116,6 +120,12 @@ class Home : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val rvListaJuegos : RecyclerView = findViewById(R.id.rvJuegosHome)
+        val listaJuegosUsuario: List<Videojuego>  = dataBaseHelper.getAllGames()
+        val adapter = V_RecyclerViewAdapter(this, listaJuegosUsuario, this)
+        rvListaJuegos.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        rvListaJuegos.adapter = adapter
+
     }
     public fun showMenu(v: View){
 
@@ -167,4 +177,17 @@ class Home : AppCompatActivity() {
         }
         menuPopup.show()
     }
+
+    private fun listaJuegos() : List<Videojuego>{
+        val dataBaseHelper = DataBaseHelper(applicationContext)
+        val listaJuegosUsuario: List<Videojuego>  = dataBaseHelper.getAllGames()
+        return listaJuegosUsuario
+    }
+
+    override fun onItemClick(position: Int) {
+        val intent = Intent(this, Juego::class.java)
+        intent.putExtra("Nombrejuego", listaJuegos().get(position).nombre)
+        startActivity(intent)
+    }
+
 }

@@ -65,7 +65,7 @@ class Register : AppCompatActivity() {
             //Si las contraseñas coinciden
             else{
                 GlobalScope.launch {
-                    val usuario : Usuario = Usuario(-1,nombreUsuario.text.toString(),email.text.toString(),confirmPass.text.toString(), getBitmap(), "Introduce los datos: ")
+                    val usuario : Usuario = Usuario(-1,nombreUsuario.text.toString(),email.text.toString(),confirmPass.text.toString(), getBitmap(), "")
                     dataBaseHelper.addUser(usuario)
                 }
                 Toast.makeText(this, "Te has registado correctamente", Toast.LENGTH_LONG).show()
@@ -82,15 +82,6 @@ class Register : AppCompatActivity() {
     }
 
     private suspend fun getBitmap(): Bitmap {
-        /*
-        val loading = ImageLoader(this)
-        val request = ImageRequest.Builder(this)
-            .data("https://avatars.githubusercontent.com/u/14994036?s=400&u=2832879700f03d4b37ae1c09645352a352b9d2d0&v=4")
-            .build()
-        val result = (loading.execute(request) as SuccessResult).drawable
-        return (result as BitmapDrawable).bitmap
-        */
-
         val loader = ImageLoader(this)
         val request = ImageRequest.Builder(this)
             .data("https://avatars.githubusercontent.com/u/14994036?s=400&u=2832879700f03d4b37ae1c09645352a352b9d2d0&v=4.jpg")
